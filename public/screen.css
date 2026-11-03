@@ -7,3 +7,41 @@
 .trial-art{background:radial-gradient(circle,#ded3fb,#9083bb55)}
 .rank-card,.trial-card{min-height:130px}
 @media(max-height:750px) and (min-width:901px){.rank-card,.trial-card{min-height:96px;margin:6px 0;padding:6px}.rank-illustration img,.trial-art img{height:92px}.ceremony-scene h1{margin:.3vh 0 1vh}.ceremony-section{padding:11px}.ceremony-section h2{margin:0 0 8px}}
+
+
+/* V7: 80-seat, one-screen projector lobby (desktop 16:9). */
+#screen-content.stage.lobby{display:block;padding:clamp(8px,1.1vh,16px) clamp(10px,1.2vw,25px);min-height:0}
+.projector-lobby{display:grid;grid-template-columns:minmax(250px,24%) minmax(0,1fr);gap:clamp(10px,1.3vw,24px);height:calc(100vh - 142px);min-height:450px;width:100%;max-width:2000px;margin:auto}
+.projector-aside{border:1px solid #ecc17a55;border-radius:22px;background:linear-gradient(145deg,#422420ed,#26131ded);padding:clamp(12px,1.4vw,25px);display:flex;flex-direction:column;overflow:hidden;box-shadow:inset 0 0 30px #0003;min-height:0}
+.projector-aside-heading{font-size:clamp(12px,1.1vw,20px);font-weight:900;color:#ffcd7b;letter-spacing:.09em}
+.projector-aside h1{font-size:clamp(27px,3vw,51px);margin:.3em 0 .15em;color:#fff4d8;line-height:1.14}
+.projector-subtitle{font-size:clamp(11px,.95vw,17px);margin:0 0 13px;color:#e6c6a3;line-height:1.45}
+.projector-join{display:flex;align-items:center;gap:14px;padding:12px;border:1px solid #f6d68f4c;border-radius:16px;background:#fff2d010}
+.projector-join img{width:clamp(80px,7vw,132px);aspect-ratio:1;border-radius:10px;padding:7px;background:white}
+.projector-join span{font-size:clamp(12px,1vw,17px);font-weight:800;color:#ffe4af;overflow-wrap:anywhere}
+.projector-join small{font-size:.8em;display:block;margin-top:5px;color:#c5b4a1}
+.projector-count{display:flex;gap:13px;align-items:center;margin:14px 0;padding:12px 13px;background:#f3bb5821;border-radius:14px}
+.projector-count strong{font-size:clamp(29px,3vw,51px);color:#ffd27a;white-space:nowrap}.projector-count strong small{font-size:.48em;color:#f0d2a9}
+.projector-count span{font-size:clamp(11px,1vw,17px);font-weight:800}.projector-count span small{display:block;color:#d0b6a4;margin-top:5px;font-size:.8em}
+.projector-chat{min-height:0;display:flex;flex-direction:column;flex:1;border-radius:18px;background:#110c12a8;border:1px solid #ffd68d50;overflow:hidden}
+.projector-chat-title{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:13px 15px;border-bottom:1px solid #ffd69b37;color:#ffd48d;font-weight:900;font-size:clamp(14px,1.3vw,20px)}
+.projector-chat-title small{font-size:clamp(9px,.73vw,12px);color:#ccb6a6;font-weight:600}
+.projector-chat-feed{padding:9px 12px;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;flex:1}
+.projector-chat-item{background:#ffffff0d;border:1px solid #ffffff10;border-radius:9px;padding:7px 10px;display:grid;gap:3px;line-height:1.25;overflow:hidden;font-size:clamp(11px,.95vw,17px)}
+.projector-chat-item b{color:#ffd585;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.projector-chat-item span{color:#fff9ec;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.projector-empty-chat{color:#ccb5ae;font-size:clamp(12px,1vw,17px);line-height:1.5}
+.projector-hall{position:relative;border:2px solid #daa55a99;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;background:#31151b;min-width:0;min-height:0}
+.projector-hall-title{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:clamp(10px,.9vw,16px);letter-spacing:.09em;font-weight:900;color:#ffddb0;padding:10px 18px;background:linear-gradient(110deg,#2e1012,#783318);border-bottom:1px solid #b6813e}
+.projector-hall-backdrop{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(180deg,#3d150d 0%,#7c3119 55%,#552010 100%)}
+.projector-altar{height:16%;min-height:48px;background-image:linear-gradient(to bottom,#0003,#0009),url('/assets/thien-duong.webp');background-position:center 22%;background-size:cover;box-shadow:0 4px 14px #0005;position:relative;flex:0 0 auto}
+.projector-seats{position:relative;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr));gap:clamp(2px,.45vh,7px) clamp(2px,.42vw,8px);padding:clamp(8px,.85vh,15px);flex:1;min-height:0;overflow:visible}
+.projector-seat{position:relative;min-width:0;min-height:0;border-radius:10px 10px 18px 18px;background:linear-gradient(170deg,#8d483b80,#31121966);border:1px solid #e8a15c48;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;isolation:isolate}
+.projector-seat img{height:calc(100% - 19px);max-width:100%;width:100%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 1px 2px #0008)}
+.projector-name{flex:0 0 auto;max-width:100%;height:19px;min-height:19px;padding:2px 5px;color:#fff8e9;background:#12090cdd;font-size:clamp(8px,.66vw,13px);font-weight:800;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:5px;width:100%}
+.empty-seat{background:#170d1470;opacity:.4}.empty-cushion{width:52%;height:17%;border-radius:50%;background:#a84d3e78;margin-bottom:14px}
+.projector-seat.talking{z-index:30;border-color:#ffdd78;box-shadow:0 0 0 1px #ffdd78,0 0 15px #ffd86666}
+.projector-speech{position:absolute;left:50%;bottom:calc(100% + 5px);transform:translateX(-50%);width:max-content;max-width:min(245px,20vw);min-width:80px;padding:8px 12px;background:#fffaf0;color:#55311c;border:2px solid #d69851;border-radius:13px;box-shadow:0 5px 18px #0007;font-size:clamp(10px,.89vw,16px);font-weight:800;line-height:1.25;text-align:center;white-space:normal;overflow-wrap:anywhere;z-index:50}
+.projector-speech:after{content:'';position:absolute;left:50%;top:100%;transform:translateX(-50%);border:8px solid transparent;border-top-color:#fffaf0}
+.projector-hall-caption{flex:0 0 auto;color:#f4d8ac;padding:9px 14px;font-size:clamp(9px,.8vw,13px);background:#1e1010d9;text-align:center}
+@media(max-height:750px) and (min-width:951px){.screen-top{padding:11px 2vw}.screen-footer{padding:9px 2vw}.projector-lobby{height:calc(100vh - 102px)}.projector-aside{padding:11px}.projector-aside h1{font-size:28px}.projector-join img{width:84px}.projector-chat-feed{gap:4px}.projector-chat-item{padding:4px 7px}.projector-count{margin:7px 0;padding:7px}.projector-hall-title{padding:7px 12px}.projector-hall-caption{padding:5px}}
+@media(max-width:950px){#screen-content.stage.lobby{padding:10px}.projector-lobby{height:auto;min-height:0;grid-template-columns:1fr}.projector-aside{min-height:260px}.projector-hall{height:max(580px,70vh)}.projector-seats{gap:3px;padding:5px}.projector-name{font-size:8px}.projector-speech{font-size:10px;max-width:130px}.projector-chat-feed{max-height:175px}}
