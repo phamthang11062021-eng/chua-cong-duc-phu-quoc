@@ -4,11 +4,10 @@ Trò chơi cuối giờ dành cho **BITI TOURIST – Nhóm 10**, bám bài thuy�
 
 ## Tính năng
 - Mỗi người nhập biệt danh, kết nối real-time qua Socket.IO; có thể vào lại bằng cùng trình duyệt khi mất mạng.
-- Mở gõ mõ: +1 điểm/lần; tối đa 5 lần/giây, 200 lần/người nhằm hạn chế spam.
 - 8 thử thách: mỗi câu tối đa 20 giây, +200 điểm nếu đúng và thưởng tốc độ tối đa +100 điểm; sai không bị trừ điểm.
 - MC chuyển câu thủ công, câu hỏi tự hết giờ và hiện đáp án theo lệnh MC, điều khiển kết thúc/reset.
-- Bảng vàng Top 10 và tổng gõ mõ; QR tạo bằng URL website thực tế.
-- Giao diện mobile, không yêu cầu đăng ký tài khoản, âm thanh mõ tổng hợp trong trình duyệt.
+- Bảng vàng Top 10 theo điểm trả lời câu hỏi; QR tạo bằng URL website thực tế.
+- Giao diện mobile, không yêu cầu đăng ký tài khoản.
 
 ## Chạy thử trên máy
 
@@ -41,7 +40,7 @@ npm start
 ## Kịch bản MC (5–8 phút)
 
 1. Mở `/mc` trên máy chiếu và dùng QR mời cả lớp vào (30–60 giây). Giữ PIN kín; khi cần có thể chiếu cửa sổ người chơi thay vì bảng MC.
-2. Nhấn **MỞ GÕ MÕ** và dẫn: “Mỗi cái gõ được 1 điểm, nhưng đừng tưởng gõ nhanh là thắng — kiến thức mới là công đức xịn!” (30–45 giây).
+2. Nhấn **BẮT ĐẦU THỬ THÁCH** để mở thẳng câu hỏi số 1.
 3. Bấm **CÂU TIẾP THEO**; cả lớp trả lời 20 giây. Đọc đáp án qua nút **HIỆN ĐÁP ÁN**, liên hệ slide và chuyển câu tiếp theo. Tổng cộng 8 câu, nên dành 20–30 giây/câu + 10–15 giây MC dẫn.
 4. Bấm **KẾT THÚC** để chốt Top 3 và trao quà. Nếu muốn chơi lại, dùng **RESET GAME** (sẽ xóa điểm và người chơi).
 
@@ -71,5 +70,28 @@ Tài liệu nguồn do người dùng cung cấp: `N10-PPT (2)(1).pdf`. Các đi
 
 - Đổi câu hỏi trong mảng `questions` ở `server.js`.
 - Đổi thời gian ở `deadline=Date.now()+20000` và `setTimeout(reveal,20050)`.
-- Đổi điểm trả lời ở `p.score+=200+...`; giới hạn gõ ở `p.taps>=200`.
+- Đổi cách chấm điểm trong sự kiện `answer` ở `server.js`.
 - Đổi tên, thông điệp và màu ở `public/index.html`, `public/style.css`.
+
+
+## Phiên bản Đại Hội Phong Thần
+
+- MC kết thúc game bằng **🏆 KẾT THÚC**, sau đó bấm **✨ ĐẠI HỘI PHONG THẦN** trên `/mc`.
+- Ba người điểm cao nhất nhận các danh hiệu Đạo Tổ Phú Quốc, Chân Nhân Hộ Quốc, Tiên Tử Grand World.
+- Ba người thấp nhất (chỉ khi có ít nhất 6 người chơi) nhận các danh hiệu và nhiệm vụ vui. Mọi nhiệm vụ đều hoàn toàn tự nguyện.
+- BXH tính trên toàn bộ người tham gia, kể cả người không nằm trong Top 10. Nếu đồng điểm, người vào trước xếp trên.
+- Bản này vẫn lưu điểm trong RAM; khởi động lại server sẽ mất kết quả. Không cập nhật khi lớp đang chơi.
+
+
+## Sân chùa chờ (Lobby) + chat (bản nâng cấp)
+
+- Sau khi đặt biệt danh, người chơi vào **Sân chùa chờ**: tượng Phật vẽ bằng CSS, các avatar thiền 🧘 và pháp danh những người đang kết nối (hiển thị tối đa 120 người, cuộn được).
+- Chat công khai trong lobby, tối đa 120 ký tự/tin, giới hạn mỗi tài khoản một tin sau 1,8 giây, chỉ khả dụng trước khi MC bắt đầu. Mọi nội dung đều được xử lý như văn bản, không thực thi HTML.
+- Trang `/mc` cho MC khóa/mở chat hoặc xóa chat. Khi bấm **BẮT ĐẦU THỬ THÁCH**, mọi người được chuyển tự động từ sân chùa sang câu hỏi đầu tiên.
+- Tin chat, điểm số và danh sách được lưu **trong RAM**; một lần restart/reset sẽ xóa. Cần kiểm thử mạng và tải trước khi cho khoảng 80 người cùng tham gia; dùng hosting Free không đảm bảo tải.
+- Nếu cần loại bỏ tin nhắn xấu, MC có thể bấm **XÓA CHAT** hoặc **KHÓA CHAT** trước khi khai hội.
+
+## Cập nhật không còn vòng gõ mõ
+- Phòng chờ ngồi thiền và chat vẫn hoạt động. MC bấm **BẮT ĐẦU THỬ THÁCH** để vào câu hỏi 1.
+- Điểm chỉ đến từ câu hỏi: đúng +200 đến +300 tùy tốc độ, sai trừ 100 (tối thiểu 0).
+- Top 3 phong thần và 3 bạn cuối bảng vẫn có danh hiệu; không còn thao tác gõ mõ.
