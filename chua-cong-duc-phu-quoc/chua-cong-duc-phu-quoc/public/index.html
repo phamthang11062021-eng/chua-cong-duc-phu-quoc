@@ -56,9 +56,13 @@
 
         <div class="hall-scene" aria-label="Thiền đường chờ khai hội">
           <div class="temple-backdrop" aria-hidden="true"></div>
-          <div id="avatar-stage" class="avatar-stage"></div>
+          <div id="avatar-stage" class="avatar-stage" aria-label="Dãy ghế nhân vật đang hiển thị"></div>
           <div class="scene-title"><span class="scene-title-icon">🪷</span><span>Chùa Công Đức<small>Phú Quốc Edition</small></span></div>
           <div class="scene-occupancy" aria-live="polite"><span class="occupancy-icon">👥</span><span>Sảnh chờ <small>Đang có: <strong id="scene-online">0/80</strong></small></span></div>
+
+        </div>
+        <nav class="seat-pages" aria-label="Chuyển dãy ghế"><button id="seat-prev" type="button" class="secondary">‹ Dãy trước</button><span id="seat-page-label">Dãy 1/1</span><button id="seat-next" type="button" class="secondary">Dãy sau ›</button></nav>
+        <details class="all-roster"><summary>👥 Xem tên tất cả người trong thiền đường</summary><div id="all-lobby-players" class="roster-grid"></div></details>
           <div class="lobby-chat">
           <div class="chat-header"><strong>👥 Chat chung</strong><span>Nói vui, lịch sự nha!</span></div>
           <div class="chat-messages" id="chat-messages" role="log" aria-live="polite"><div class="chat-empty">Chưa ai lên tiếng. Chào cả lớp đi nè 👋</div></div>
@@ -68,7 +72,6 @@
           </form>
           <p class="chat-notice">Chat công khai trong lớp • MC có thể khóa chat</p>
           </div>
-        </div>
         <div class="lobby-meta"><span id="lobby-count">0 thí chủ đang thiền</span><span class="lobby-pulse">● ĐANG CHỜ MC KHAI HỘI</span></div>
       </section>
 

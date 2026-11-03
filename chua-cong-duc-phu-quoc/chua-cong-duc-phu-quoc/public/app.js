@@ -61,38 +61,23 @@ function renderQuestion(s){
     ? (me?.answered ? 'Đã khóa đáp án. Chờ MC công bố!' : 'Đúng: +200 đến +300 công đức. Sai: −100 công đức (không âm điểm)!')
     : 'MC sẽ dẫn sang thử thách kế tiếp.';
 }
-function getSeatLayout(total){
-  // Seat rows progress from altar (small, far) to camera (big, close).
-  // For 80 players: 6+8+10+12+14+16+14 = 80 (bounded rows, all visible).
-  const capacities = [6,8,10,12,14,16,18];
-  const counts=[];let remaining=total;
-  for(const capacity of capacities){if(!remaining)break;counts.push(Math.min(remaining,capacity));remaining-=capacity;}
-  while(remaining>0){counts.push(Math.min(remaining,18));remaining-=18;}
-  const seats=[];
-  const dense=total>35;
-  counts.forEach((count,r)=>{
-    const p=counts.length===1?.5:r/Math.max(1,counts.length-1);
-    const y = counts.length===1?75:(53+36*p);
-    const scale=(total<=10 ? .69+.38*p : total<=30 ? .53+.35*p : .34+.23*p);
-    const margin=total<=10?13:total<=30?8:3;
-    for(let i=0;i<count;i++){
-      const x = margin + ((i+.5)/count)*(100-margin*2);
-      seats.push({x,y,scale,back:r<Math.max(1,counts.length-3)});
-    }
-  });
-  return seats;
+// 12 seats per page: readable even at 80 connected players, no overlapping labels.
+const LOBBY_PAGE_SIZE=12;
+let lobbyPage=0;
+let pageChosen=false;
+function createAvatar(person){
+  const item=document.createElement('div');
+  item.className='seated-player'+(person.id===id?' own-seat':'');
+  const src='/assets/'+(person.gender==='female'?'ni-co':'su-chu')+'.svg';
+  item.innerHTML=`<div class="seat-bubble${person.bubble?' active':''}">${escapeHtml(person.bubble||'')}</div><img src="${src}" alt="" loading="lazy"><div class="seat-name" title="${escapeHtml(person.name)}">${escapeHtml(person.name)}</div>`;
+  return item;
 }
-function createAvatar(person,pos){
-  const wrap=document.createElement('div');
-  wrap.className='avatar-wrap'+(person.id===id?' me':'');
-  wrap.style.setProperty('--x',pos.x+'%');
-  wrap.style.setProperty('--y',pos.y+'%');
-  wrap.style.setProperty('--scale',pos.scale);
-  wrap.style.setProperty('--rank',String(Math.round(pos.y*10)));
-  const src='/assets/'+(person.gender==='female'?'ni-co':'su-chu')+(pos.back?'-quay-lung':'')+'.svg';
-  // Names are escaped, and image source is derived only from a hardcoded enum.
-  wrap.innerHTML=`<div class="chat-bubble${person.bubble?' show':''}">${escapeHtml(person.bubble||'')}</div><div class="avatar-name">${escapeHtml(person.name)}</div><img class="chibi-sprite" src="${src}" alt="" draggable="false">`;
-  return wrap;
+function switchLobbyPage(direction){
+ if(!current?.lobby)return;
+ const total=Math.max(1,Math.ceil(current.lobby.people.length/LOBBY_PAGE_SIZE));
+ lobbyPage=Math.max(0,Math.min(total-1,lobbyPage+direction));
+ pageChosen=true;
+ renderLobby(current.lobby);
 }
 function addChatMessage(m){
   const line = document.createElement('div');
@@ -109,38 +94,49 @@ function addChatMessage(m){
   $('chat-messages').append(line);
 }
 function renderLobby(lobby){
-  if(!lobby) return;
-  const stage = $('avatar-stage');
-  stage.innerHTML = '';
-  const layout = getSeatLayout(lobby.people.length);
-  lobby.people.forEach((p,i)=> stage.append(createAvatar(p, layout[i] || {x:50,y:60,scale:1,back:false})));
-  $('lobby-count').textContent = lobby.people.length + ' thí chủ đang ngồi thiền';
-  $('scene-online').textContent = lobby.people.length + '/80';
-
-  const messages = $('chat-messages');
-  if(lobby.messages.length !== lobbyMessageCount){
-    lobbyMessageCount = lobby.messages.length;
-    messages.innerHTML = '';
-    if(!lobby.messages.length){
-      const empty = document.createElement('div');
-      empty.className = 'chat-empty';
-      empty.textContent = 'Chưa ai lên tiếng. Chào cả lớp đi nè 👋';
-      messages.append(empty);
-    }
-    lobby.messages.forEach(addChatMessage);
-    messages.scrollTop = messages.scrollHeight;
+  if(!lobby)return;
+  const total=lobby.people.length;
+  const pages=Math.max(1,Math.ceil(total/LOBBY_PAGE_SIZE));
+  // On first join, navigate to the page containing the current player's avatar.
+  if(!pageChosen){
+    const myIndex=lobby.people.findIndex(p=>p.id===id);
+    if(myIndex>=0)lobbyPage=Math.floor(myIndex/LOBBY_PAGE_SIZE);
   }
-  $('chat-input').disabled = !!lobby.chatLocked;
-  $('chat-send').disabled = !!lobby.chatLocked;
-  $('chat-input').placeholder = lobby.chatLocked ? 'MC đã tạm khóa chat' : 'Gửi lời nhắn cho cả thiền đường...';
+  lobbyPage=Math.max(0,Math.min(pages-1,lobbyPage));
+  const stage=$('avatar-stage');
+  stage.replaceChildren(...lobby.people.slice(lobbyPage*LOBBY_PAGE_SIZE,(lobbyPage+1)*LOBBY_PAGE_SIZE).map(createAvatar));
+  $('seat-page-label').textContent=`Dãy ${lobbyPage+1}/${pages} · ${Math.min(total,LOBBY_PAGE_SIZE)} chỗ đang hiển thị`;
+  $('seat-prev').disabled=lobbyPage===0;
+  $('seat-next').disabled=lobbyPage===pages-1;
+  $('lobby-count').textContent=total+' thí chủ đang thiền · '+pages+' dãy ghế';
+  $('scene-online').textContent=total+'/80';
+  const roster=$('all-lobby-players');
+  roster.replaceChildren(...lobby.people.map(p=>{
+    const name=document.createElement('span');name.className='roster-name'+(p.id===id?' self':'');name.textContent=p.name;return name;
+  }));
+  const messages=$('chat-messages');
+  const last=lobby.messages[lobby.messages.length-1];
+  const signature=lobby.messages.length+'-'+(last?.at||0)+'-'+(last?.text||'');
+  if(signature!==lobbyMessageCount){
+    lobbyMessageCount=signature;
+    messages.replaceChildren();
+    if(!lobby.messages.length){const empty=document.createElement('div');empty.className='chat-empty';empty.textContent='Chưa ai lên tiếng. Chào cả lớp đi nè 👋';messages.append(empty);}
+    lobby.messages.forEach(addChatMessage);
+    messages.scrollTop=messages.scrollHeight;
+  }
+  $('chat-input').disabled=!!lobby.chatLocked;
+  $('chat-send').disabled=!!lobby.chatLocked;
+  $('chat-input').placeholder=lobby.chatLocked?'MC đã khóa chat':'Nhắn gì đó với cả lớp...';
+}
+function ceremonyArt(kind,i){
+ const art=kind==='winner'?['dao-to.svg','chan-nhan.svg','tien-tu.svg']:['yeu-vuong.svg','hau-vuong.svg','pham-nhan.svg'];
+ return '/assets/phong-than/'+art[i];
 }
 function renderCeremony(data){
-  const win = $('ceremony-winners'), lose = $('ceremony-trials');
-  if(!data) return;
-  const rewards = ['🥇','🥈','🥉'], trials = ['👻','🐒','🥲'];
-  const row = (p,emoji,detail)=>`<div class="ceremony-card"><div class="ceremony-emoji">${emoji}</div><div class="ceremony-info"><div class="ceremony-rank">HẠNG #${p.rank} · ${fmt(p.score)} CÔNG ĐỨC</div><strong>${escapeHtml(p.title)}</strong><div class="ceremony-player">${escapeHtml(p.name)}</div>${detail ? `<p>${escapeHtml(detail)}</p>` : ''}</div></div>`;
-  win.innerHTML = data.best.map((p,i)=>row(p,rewards[i],'Công đức vô lượng, xứng đáng phi thăng!')).join('');
-  lose.innerHTML = data.worst.length ? data.worst.map((p,i)=>row(p,trials[i],p.task)).join('') : '<div class="ceremony-card"><div class="ceremony-info"><strong>Chưa đủ người để xếp Bottom 3.</strong></div></div>';
+ const win=$('ceremony-winners'),lose=$('ceremony-trials');if(!data)return;
+ const card=(p,i,kind)=>`<article class="ascension-card ${kind} tier-${i+1}"><div class="ascension-portrait"><img src="${ceremonyArt(kind,i)}" alt="Tranh nhân vật ${escapeHtml(p.title)}"><span class="portrait-spark">✦</span></div><div class="ascension-body"><div class="ascension-rank">HẠNG #${p.rank} · ${fmt(p.score)} CÔNG ĐỨC</div><strong>${escapeHtml(p.title)}</strong><div class="ascension-player">${escapeHtml(p.name)}</div>${kind==='trial'?`<p>${escapeHtml(p.task||'')}</p>`:'<p>✨ Phi thăng thành công!</p>'}</div></article>`;
+ win.innerHTML=data.best.map((p,i)=>card(p,i,'winner')).join('');
+ lose.innerHTML=data.worst.length?data.worst.map((p,i)=>card(p,i,'trial')).join(''):'<div class="ceremony-card"><strong>Chưa đủ 6 người để xếp Bottom 3.</strong></div>';
 }
 function renderState(s){
   current = s;
@@ -160,6 +156,8 @@ function renderState(s){
   if(s.phase === 'ceremony') renderCeremony(s.ceremony);
 }
 
+$('seat-prev').addEventListener('click',()=>switchLobbyPage(-1));
+$('seat-next').addEventListener('click',()=>switchLobbyPage(1));
 $('join-form').addEventListener('submit', e => {
   e.preventDefault();
   const name = $('nickname').value.trim();
