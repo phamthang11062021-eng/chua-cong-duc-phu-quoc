@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 260" role="img" aria-label="Vương miện đạo tổ"><defs><radialGradient id="halo"><stop stop-color="#ffe9a3"/><stop offset="1" stop-color="#d69b37" stop-opacity="0"/></radialGradient><linearGradient id="robe" x2="1" y2="1"><stop stop-color="#ffe9a3"/><stop offset=".55" stop-color="#d69b37"/><stop offset="1" stop-color="#8e5c1e"/></linearGradient></defs>
+<circle cx="120" cy="113" r="104" fill="url(#halo)"/><circle cx="120" cy="106" r="87" fill="none" stroke="#ffe9a3" stroke-width="4" stroke-dasharray="8 10" opacity=".9"/>
+<path d="M30 222 Q74 192 120 208 Q170 192 211 222 Q176 258 120 242 Q67 258 30 222" fill="#d69b37" opacity=".38"/>
+<path d="M52 205 Q58 151 102 144 L140 144 Q181 153 188 205 Q193 241 120 244 Q47 241 52 205" fill="url(#robe)" stroke="#8e5c1e" stroke-width="4"/>
+<path d="M81 168 Q95 188 117 209 M160 168 Q142 186 123 209" fill="none" stroke="#ffe9a3" stroke-width="13" stroke-linecap="round"/>
+<ellipse cx="120" cy="112" rx="47" ry="53" fill="#f5cda5" stroke="#bd8965" stroke-width="3"/>
+<path d="M74 101 Q71 44 119 44 Q165 44 166 100 Q156 83 145 79 Q113 91 83 77 Z" fill="#8e5c1e"/>
+<circle cx="101" cy="117" r="3.7" fill="#46332b"/><circle cx="139" cy="117" r="3.7" fill="#46332b"/><path d="M108 138 Q120 145 132 138" stroke="#8b4a3f" fill="none" stroke-width="3.5" stroke-linecap="round"/>
+<circle cx="88" cy="130" r="7" fill="#f5a897" opacity=".6"/><circle cx="152" cy="130" r="7" fill="#f5a897" opacity=".6"/>
+<path d="M84 64 Q105 26 120 28 Q138 25 156 64" fill="#d69b37" stroke="#8e5c1e" stroke-width="4"/><path d="M93 52 L100 19 L120 37 L141 19 L150 52" fill="#ffe9a3" stroke="#8e5c1e" stroke-width="3"/>
+<circle cx="121" cy="30" r="9" fill="#d69b37" stroke="#8e5c1e" stroke-width="2"/>
+<text x="120" y="33" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#8e5c1e">☯</text>
+<g fill="#ffe9a3" opacity=".95"><circle cx="27" cy="78" r="5"/><circle cx="209" cy="65" r="4"/><circle cx="213" cy="175" r="6"/></g><path d="M23 125 l7 -15 l7 15 l-7 15z M206 122 l8 -15 l8 15 l-8 15z" fill="#d69b37"/>
+</svg>
