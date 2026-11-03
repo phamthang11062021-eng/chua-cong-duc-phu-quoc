@@ -39,3 +39,62 @@
 .chat-notice{font-size:10px!important;margin:8px 0 0!important;color:#8e9898!important}
 @media(max-width:520px){.lobby-scene{min-height:270px;padding:6px}.meditators{grid-template-columns:repeat(4,minmax(0,1fr));max-height:235px}.lobby-panel{padding:16px 12px}.chat-header{flex-direction:column;align-items:flex-start}.lobby-meta{font-size:10px;flex-wrap:wrap}.chat-form button{padding:9px 11px}}
 @media(prefers-reduced-motion:reduce){.meditator,.meditator-icon{animation:none}}
+
+
+/* Join view: gender picker */
+.gender-picker{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.gender-card{position:relative;cursor:pointer}
+.gender-card input{position:absolute;opacity:0;pointer-events:none}
+.gender-card-ui{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:14px 10px;border:2px solid #dbe9e7;border-radius:16px;background:#f8fbfb;transition:.16s}
+.gender-card b{font-size:14px;color:#18495e}.gender-card small{color:#7d9298;font-size:11px;font-weight:700}
+.gender-card input:checked + .gender-card-ui{border-color:#ddac5f;background:linear-gradient(180deg,#fff5db,#fff)}
+.gender-avatar.avatar-preview{position:relative;display:block;width:72px;height:78px}
+.gender-avatar .avatar-head,.gender-avatar .avatar-body,.gender-avatar .avatar-seat{position:absolute}
+.gender-avatar .avatar-head{width:32px;height:32px;border-radius:50%;left:20px;top:6px;background:#f4c69a;box-shadow:0 -6px 0 0 #dca574 inset}
+.gender-avatar .avatar-body{left:14px;top:30px;width:44px;height:34px;border-radius:40% 40% 38% 38%}
+.gender-avatar.monk .avatar-body{background:#73777f}.gender-avatar.nun .avatar-body{background:#947255}
+.gender-avatar .avatar-seat{left:10px;bottom:4px;width:52px;height:13px;border-radius:50%;background:#9a3f31}
+
+/* Chibi lobby hall */
+.hall-scene{position:relative;height:520px;overflow:hidden;border-radius:22px;border:1px solid #d8b47d;margin:18px 0 12px;background:linear-gradient(180deg,#3c0d0b 0 12%,#5c180d 12% 34%,#6b270f 34% 58%,#592312 58% 100%);box-shadow:inset 0 10px 40px #00000042}
+.hall-ceiling{position:absolute;inset:0 0 auto 0;height:74px;background:linear-gradient(180deg,#260201,#48110f);box-shadow:0 6px 14px #0007}
+.hall-lantern{position:absolute;top:74px;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffef88,#ef4031 55%,#811b16 100%);box-shadow:0 0 14px #ffb05466}
+.hall-lantern::before{content:'';position:absolute;left:11px;top:-36px;width:2px;height:38px;background:#ceb47c}
+.hall-lantern::after{content:'';position:absolute;left:9px;bottom:-8px;width:6px;height:10px;border-radius:0 0 8px 8px;background:#f6be62}.lantern-left{left:36px}.lantern-right{right:36px}
+.hall-wall-art{position:absolute;top:140px;width:104px;height:60px;border:4px solid #3b2015;box-shadow:0 0 0 2px #a67b37 inset;background:linear-gradient(135deg,#cbe698,#74ba77 40%,#f6db7e 72%,#94c6f5)}
+.art-left{left:26px}.art-right{right:26px}
+.altar-wrap{position:absolute;left:50%;top:84px;transform:translateX(-50%);width:min(88%,470px);height:196px}
+.altar-backdrop{position:absolute;left:50%;top:44px;transform:translateX(-50%);width:88%;height:94px;border:4px solid #6d3d08;box-shadow:0 0 0 3px #d5b03d inset;background:linear-gradient(135deg,#eec64e,#f8e997 28%,#cbdf98 52%,#c38d3f)}
+.altar-incense{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);width:46px;height:8px;border-radius:8px;background:#c19242;box-shadow:0 -12px 0 -2px #6e4630, -11px -22px 0 -8px #fff2cc, 0 -26px 0 -8px #fff2cc, 11px -22px 0 -8px #fff2cc}
+.altar-statue{position:absolute;bottom:26px;background:linear-gradient(180deg,#fffdf5,#d9d0cc);filter:drop-shadow(0 3px 4px #00000029)}
+.altar-statue::before{content:'';position:absolute;border-radius:50%;background:linear-gradient(180deg,#fffef7,#e1d5cf)}
+.altar-statue::after{content:'';position:absolute;left:50%;transform:translateX(-50%);bottom:-2px;width:76%;height:18%;background:linear-gradient(180deg,#d8d0ca,#ffffff);border-radius:50% 50% 42% 42%}
+.statue-main{left:50%;transform:translateX(-50%);width:116px;height:164px;border-radius:36% 36% 26% 26%}
+.statue-main::before{width:32px;height:38px;top:12px;left:42px}
+.statue-left,.statue-right{width:84px;height:126px;border-radius:38% 38% 26% 26%}
+.statue-left{left:44px}.statue-right{right:44px}
+.statue-left::before,.statue-right::before{width:26px;height:32px;top:12px;left:29px}
+.hall-floor{position:absolute;left:0;right:0;bottom:0;height:47%;background:linear-gradient(180deg,#6f2b17,#4d170d)}
+.hall-floor::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 9%,#22120c33 9% 10.2%),repeating-linear-gradient(180deg,transparent 0 28px,#00000020 28px 30px)}
+.avatar-stage{position:absolute;inset:0;overflow:hidden}
+.avatar-wrap{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%) scale(var(--scale));transform-origin:center bottom;display:flex;flex-direction:column;align-items:center;pointer-events:none;filter:drop-shadow(0 4px 4px #00000038)}
+.avatar-wrap.me .avatar-name{background:#0f5c6f;color:#fff6d5}
+.avatar-name{margin-bottom:6px;max-width:96px;padding:4px 8px;background:#0000008f;color:#fff;font-size:11px;font-weight:900;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.chat-bubble{opacity:0;transform:translateY(4px) scale(.96);transition:.2s ease;max-width:108px;min-height:18px;margin-bottom:5px;padding:6px 9px;border-radius:13px;background:#fffef9;color:#55391f;border:1px solid #e6d1aa;font-size:10px;font-weight:700;line-height:1.35;text-align:center;word-wrap:break-word;box-shadow:0 3px 10px #00000018}
+.chat-bubble.show{opacity:1;transform:translateY(0) scale(1)}
+.chat-bubble:after{content:'';position:absolute;left:50%;transform:translateX(-50%);bottom:-6px;border:7px solid transparent;border-top-color:#fffef9;filter:drop-shadow(0 1px 0 #e6d1aa)}
+.chibi{position:relative;width:72px;height:86px}
+.chibi .avatar-head,.chibi .avatar-body,.chibi .avatar-arms,.chibi .avatar-seat{position:absolute}
+.chibi .avatar-head{width:38px;height:38px;border-radius:50%;left:17px;top:10px;background:linear-gradient(180deg,#f8d2af,#efbe94);box-shadow:0 -8px 0 0 #dbad84 inset}
+.chibi .avatar-head:before,.chibi .avatar-head:after{content:'';position:absolute;top:16px;width:4px;height:4px;border-radius:50%;background:#2e261f}
+.chibi .avatar-head:before{left:10px}.chibi .avatar-head:after{right:10px}
+.chibi .avatar-head::marker{display:none}
+.chibi .avatar-body{left:12px;top:34px;width:48px;height:34px;border-radius:42% 42% 38% 38%}
+.chibi .avatar-body:after{content:'';position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);width:28px;height:12px;border-radius:50%;background:inherit;filter:brightness(.98)}
+.chibi .avatar-arms{left:16px;top:42px;width:40px;height:12px;border-radius:12px;background:inherit;opacity:.98}
+.chibi.monk .avatar-body,.chibi.monk .avatar-arms{background:#747983}
+.chibi.nun .avatar-body,.chibi.nun .avatar-arms{background:#8b694d}
+.chibi .avatar-seat{left:8px;bottom:10px;width:56px;height:16px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#9d4438,#6a1714 75%);box-shadow:0 3px 0 #4f0f0f}
+.chat-line.system{color:#8b6630;font-weight:800;background:#fff8e5;padding:8px 9px;border-radius:10px;border-bottom:0;margin:4px 0}
+@media(max-width:760px){.hall-scene{height:460px}.hall-wall-art{width:74px;height:44px;top:150px}.altar-wrap{top:94px;height:178px}.statue-main{width:94px;height:144px}.statue-main::before{left:34px}.statue-left,.statue-right{width:70px;height:108px}.statue-left{left:24px}.statue-right{right:24px}.avatar-name{max-width:84px;font-size:10px;padding:3px 6px}.chat-bubble{max-width:86px;font-size:9px}.chibi{width:62px;height:74px}.chibi .avatar-head{width:32px;height:32px;left:15px;top:8px}.chibi .avatar-body{width:42px;height:30px;left:10px;top:29px}.chibi .avatar-arms{width:36px;left:13px;top:36px}.chibi .avatar-seat{width:50px;height:14px;left:6px;bottom:8px}}
+@media(max-width:520px){.gender-picker{grid-template-columns:1fr}.hall-scene{height:410px}.hall-wall-art{display:none}.hall-lantern{top:80px}.altar-wrap{width:94%;top:100px}.chat-form{flex-direction:column}.chat-form button{width:100%}.me-bar{grid-template-columns:1.3fr 1fr 1fr}}
