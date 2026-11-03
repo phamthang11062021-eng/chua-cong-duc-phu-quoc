@@ -143,6 +143,7 @@ io.on('connection', socket => {
   if(phase === 'finished' || phase === 'ceremony') return ack?.({ok:false,error:'Vòng chơi đã kết thúc. Hãy chờ MC mở vòng mới.'});
   if(!players.has(id) && players.size >= 80) return ack?.({ok:false,error:'Thiền đường đã đủ 80 người.'});
   let p = players.get(id);
+  const isNew = !p;
   if(!p){
    p = {id,name,gender,score:0,joined:Date.now(),answeredRound:-1,selected:null,lastChat:'',chatUntil:0};
    players.set(id,p);
@@ -155,6 +156,7 @@ io.on('connection', socket => {
   socket.data.playerId = id;
   socket.emit('me', personal(p));
   ack?.({ok:true});
+  if(isNew && phase === 'lobby') io.emit('lobby:new-join', {name:p.name});
   broadcast();
  });
  socket.on('lobby:chat',(raw,ack)=>{

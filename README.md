@@ -55,3 +55,11 @@ Giữ nguyên Render Root Directory đang hoạt động, ví dụ `chua-cong-du
 - Để tránh hai nguồn âm thanh phát đè nhau, chỉ bật nhạc trên máy/cửa sổ muốn nghe (thường là máy chiếu của MC).
 - Khi deploy, giữ `MC_PIN` trong Render Environment. Điểm vẫn lưu RAM và có thể mất khi Render khởi động lại.
 - Test thử trên điện thoại + `/screen` trước khi dùng cho lớp đông.
+
+
+## V9 âm thanh + xướng tên
+- Trên `/screen`, MC bấm **♫ Bật nhạc thiền + xướng tên** một lần khi bắt đầu.
+- Nhạc thiền là file `/meditation-original.mp3` nguyên bản, lặp liên tục. Tùy thiết bị cần tăng âm lượng loa.
+- Tên người chơi mới vào phòng sẽ được trình duyệt đọc tiếng Việt bằng SpeechSynthesis; cần máy có giọng vi-VN.
+- Không đọc lại danh sách người đã ở sẵn trước khi bật âm thanh. Nếu 80 người vào dồn dập, hàng đợi sẽ được xử lý lần lượt và dừng khi MC bắt đầu câu hỏi.
+- Đây là bản V9 không thay luật tính điểm, chat, hay chức năng MC.
