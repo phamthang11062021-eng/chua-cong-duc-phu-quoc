@@ -1,8 +1,13 @@
 const socket=io();const $=id=>document.getElementById(id);let state=null,offset=0,lastRevision=-1;
 function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function fmt(x){return Number(x||0).toLocaleString('vi-VN');}
-function reward(p,i){const imgs=['dao-to.svg','chan-nhan.svg','tien-tu.svg'];return `<div class="rank-card ${i===0?'champion':''}"><div class="rank-illustration"><img src="/assets/phong-than/${imgs[i]}" alt="Nhân vật tu tiên"></div><div><div class="rank-small">HẠNG #${i+1} · ${fmt(p.score)} CÔNG ĐỨC</div><div class="rank-title">${safe(p.title)}</div><div class="rank-name">${safe(p.name)}</div></div></div>`;}
-function trial(p,i){const imgs=['yeu-vuong.svg','hau-vuong.svg','pham-nhan.svg'];return `<div class="trial-card"><div class="trial-art"><img src="/assets/phong-than/${imgs[i]}" alt="Nhân vật kiếp nạn"></div><div><div class="rank-small">HẠNG #${p.rank} · ${fmt(p.score)} CÔNG ĐỨC</div><div class="rank-title">${safe(p.title)}</div><div class="rank-name">${safe(p.name)}</div><div class="task">${safe(p.task)}</div></div></div>`;}
+function podium(p,i){
+ const titles=['ĐẠO TỔ PHÚ QUỐC','CHÂN NHÂN HỘ QUỐC','TIÊN TỬ GRAND WORLD'];
+ const arts=['dao-to.svg','chan-nhan.svg','tien-tu.svg'];
+ const tier=i+1;
+ return `<article class="sky-winner sky-rank-${tier}"><span class="sky-crown">${['✦ HẠNG NHẤT ✦','HẠNG NHÌ','HẠNG BA'][i]}</span><div class="sky-aura"><img src="/assets/phong-than/${arts[i]}" alt="Nhân vật ${safe(p.title||titles[i])}"></div><div class="sky-rank-number">${tier}</div><div class="sky-name">${safe(p.name)}</div><div class="sky-title">${safe(p.title||titles[i])}</div><div class="sky-score">${fmt(p.score)} công đức</div><div class="sky-plinth"></div></article>`;
+}
+function trial(p,i){const imgs=['yeu-vuong.svg','hau-vuong.svg','pham-nhan.svg'];return `<div class="trial-card"><div class="trial-art"><img src="/assets/phong-than/${imgs[i]}" alt="Nhân vật kiếp nạn"></div><div><div class="rank-small">HẠNG #${p.rank} · ${fmt(p.score)} CÔNG ĐỨC</div><div class="rank-title">${safe(p.title)}</div><div class="rank-name">${safe(p.name)}</div><div class="task">${safe(p.task||'')}</div></div></div>`;}
 function render(s){
   state=s;offset=s.now-Date.now();$('screen-people').textContent=`${s.onlineCount ?? (s.lobby?.people?.length ?? s.count)}/80`; const names={lobby:'SẢNH CHỜ',question:'THỬ THÁCH',reveal:'CÔNG BỐ ĐÁP ÁN',finished:'KẾT THÚC',ceremony:'ĐẠI HỘI PHONG THẦN'};$('screen-state').textContent=names[s.phase]||'ĐANG CHỜ';
   if(lastRevision===s.revision)return;lastRevision=s.revision;
@@ -30,7 +35,7 @@ function render(s){
     stage.innerHTML='<section class="waiting"><div class="meditation-symbol">🏆</div><div class="kicker">HỘI CÔNG ĐỨC ĐÃ KHÉP LẠI</div><h1>Chuẩn bị phong thần!</h1><p>MC bấm “ĐẠI HỘI PHONG THẦN” để công bố kết quả.</p></section>';
   } else if(s.phase==='ceremony'&&s.ceremony){
     const d=s.ceremony;
-    stage.innerHTML=`<section class="ceremony-scene"><div class="heavenly">✦ ✨ ✦</div><div class="kicker">BITI TOURIST · ĐẠI HỘI PHONG THẦN</div><h1>THIÊN ĐÌNH PHÚ QUỐC</h1><div class="ceremony-columns"><div class="ceremony-section"><h2>☁️ TOP 3 PHI THĂNG TU TIÊN ☁️</h2>${d.best.map(reward).join('')}</div><div class="ceremony-section shadow"><h2>💀 KIẾP NẠN CHƯA DỨT 💀</h2>${d.worst.length?d.worst.map(trial).join(''):'<p>Chưa đủ 6 người để xếp Bottom 3.</p>'}<div class="voluntary">Thử thách vui, hoàn toàn tự nguyện.</div></div></div></section>`;
+    stage.innerHTML=`<section class="ceremony-scene v8-ceremony"><div class="heavenly">✦ ☁ ✦</div><div class="kicker">BITI TOURIST · ĐẠI HỘI PHONG THẦN</div><h1>THIÊN ĐÌNH PHÚ QUỐC</h1><h2 class="sky-headline">TOP 3 PHI THĂNG TU TIÊN</h2><div class="sky-podium">${[1,0,2].filter(i=>d.best[i]).map(i=>podium(d.best[i],i)).join('')}</div><div class="sky-trials"><h2>☯ KIẾP NẠN CHƯA DỨT</h2><div class="sky-trial-grid">${d.worst.length?d.worst.map(trial).join(''):'<p>Chưa đủ 6 người để xếp Bottom 3.</p>'}</div><p>Thử thách chỉ để vui, hoàn toàn tự nguyện.</p></div></section>`;
   }
 }
 socket.on('state',render);socket.on('disconnect',()=>{$('screen-state').textContent='MẤT KẾT NỐI';});

@@ -141,9 +141,12 @@ function ceremonyArt(kind,i){
 }
 function renderCeremony(data){
  const win=$('ceremony-winners'),lose=$('ceremony-trials');if(!data)return;
- const card=(p,i,kind)=>`<article class="ascension-card ${kind} tier-${i+1}"><div class="ascension-portrait"><img src="${ceremonyArt(kind,i)}" alt="Tranh nhân vật ${escapeHtml(p.title)}"><span class="portrait-spark">✦</span></div><div class="ascension-body"><div class="ascension-rank">HẠNG #${p.rank} · ${fmt(p.score)} CÔNG ĐỨC</div><strong>${escapeHtml(p.title)}</strong><div class="ascension-player">${escapeHtml(p.name)}</div>${kind==='trial'?`<p>${escapeHtml(p.task||'')}</p>`:'<p>✨ Phi thăng thành công!</p>'}</div></article>`;
- win.innerHTML=data.best.map((p,i)=>card(p,i,'winner')).join('');
- lose.innerHTML=data.worst.length?data.worst.map((p,i)=>card(p,i,'trial')).join(''):'<div class="ceremony-card"><strong>Chưa đủ 6 người để xếp Bottom 3.</strong></div>';
+ const pics=['dao-to.svg','chan-nhan.svg','tien-tu.svg'];
+ const card=(p,i)=>`<article class="mobile-sky-winner sky-rank-${i+1}"><div class="mobile-sky-aura"><img src="/assets/phong-than/${pics[i]}" alt="Nhân vật tu tiên ${escapeHtml(p.title)}"></div><span class="mobile-sky-medal">${i+1}</span><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.title)}</small><strong>${fmt(p.score)} công đức</strong></article>`;
+ win.className='ceremony-list mobile-sky-podium';
+ win.innerHTML=[1,0,2].filter(i=>data.best[i]).map(i=>card(data.best[i],i)).join('');
+ const trials=['yeu-vuong.svg','hau-vuong.svg','pham-nhan.svg'];
+ lose.innerHTML=data.worst.length?data.worst.map((p,i)=>`<article class="ascension-card trial tier-${i+1}"><div class="ascension-portrait"><img src="/assets/phong-than/${trials[i]}" alt="${escapeHtml(p.title)}"></div><div class="ascension-body"><div class="ascension-rank">HẠNG #${p.rank} · ${fmt(p.score)} CÔNG ĐỨC</div><strong>${escapeHtml(p.title)}</strong><div class="ascension-player">${escapeHtml(p.name)}</div><p>${escapeHtml(p.task||'')}</p></div></article>`).join(''):'<div class="ceremony-card">Chưa đủ 6 người để xếp Bottom 3.</div>';
 }
 function renderState(s){
   current = s;

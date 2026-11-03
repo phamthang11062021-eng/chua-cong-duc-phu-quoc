@@ -297,3 +297,29 @@
  .hall-scene .avatar-stage{top:41%!important;gap:7px 8px!important}
  .hall-scene .seated-player .seat-name{font-size:10px!important}
 }
+
+
+/* V8 smartphone winner podium: Top 1 is tallest, ranks 2 & 3 equal. */
+.mobile-sky-podium{display:grid!important;grid-template-columns:1fr 1.3fr 1fr;gap:6px;align-items:end;margin:14px -6px 25px;text-align:center}
+.mobile-sky-winner{--shine:#c7d8ea;min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;isolation:isolate;padding:8px 3px;border-radius:15px 15px 5px 5px;background:linear-gradient(#dce5f2,#fffdf4);border:1px solid #c1b9aa;box-shadow:0 5px 10px #8d5a2920}
+.mobile-sky-winner.sky-rank-1{--shine:#f7c94d;background:linear-gradient(#ffebad,#fff6dd);border-color:#e0aa43;min-height:267px}
+.mobile-sky-winner.sky-rank-3{--shine:#dfaa83;background:linear-gradient(#f5d7c3,#fff9ee)}
+.mobile-sky-winner:not(.sky-rank-1){min-height:230px}
+.mobile-sky-aura{height:105px;width:100%;display:grid;place-items:center;position:relative;isolation:isolate}
+.sky-rank-1 .mobile-sky-aura{height:142px}
+.mobile-sky-aura:before{content:'';position:absolute;width:88%;aspect-ratio:1;border-radius:50%;background:repeating-conic-gradient(var(--shine) 0deg 15deg,transparent 16deg 38deg);filter:blur(4px);opacity:.72;z-index:-1;animation:sky-spin 14s linear infinite}
+.mobile-sky-aura:after{content:'';position:absolute;inset:13%;border-radius:50%;background:radial-gradient(circle,var(--shine),transparent 74%);filter:blur(8px);z-index:-1;animation:sky-pulse 3s infinite}
+.mobile-sky-aura img{position:relative;max-width:95%;height:100%;object-fit:contain;filter:drop-shadow(0 0 7px var(--shine));animation:sky-float 3.5s ease-in-out infinite}
+.mobile-sky-medal{border-radius:50%;width:27px;height:27px;display:grid;place-items:center;background:var(--shine);font-size:18px;font-weight:900;color:#744f2c;margin:3px 0}
+.mobile-sky-winner b{display:block;font-size:clamp(11px,2.8vw,16px);max-width:100%;overflow-wrap:anywhere;color:#163b53}
+.mobile-sky-winner small{font-size:clamp(9px,2vw,12px);font-weight:800;color:#7d531c;line-height:1.4;margin:4px 0}
+.mobile-sky-winner strong{font-size:clamp(10px,2.1vw,13px);color:#9b6927}
+@media(max-width:370px){.mobile-sky-podium{gap:3px}.mobile-sky-winner{padding:5px 2px}.sky-rank-1 .mobile-sky-aura{height:120px}}
+@media(prefers-reduced-motion:reduce){.mobile-sky-aura:before,.mobile-sky-aura:after,.mobile-sky-aura img{animation:none!important}}
+/* Audio toggle on all devices */
+.meditation-audio-toggle{position:fixed;z-index:99999;right:12px;bottom:14px;display:flex;align-items:center;gap:7px;border-radius:40px;border:1px solid #e3b86d;background:#241822ee;color:#ffe0a1;font:800 12px 'Be Vietnam Pro',system-ui,sans-serif;padding:10px 14px;box-shadow:0 8px 24px #0005;cursor:pointer}
+.meditation-audio-toggle:focus-visible{outline:3px solid #ffca70;outline-offset:2px}
+
+@keyframes sky-spin{to{transform:rotate(360deg)}}
+@keyframes sky-pulse{50%{opacity:1;transform:scale(1.13)}}
+@keyframes sky-float{50%{transform:translateY(-8px)}}
