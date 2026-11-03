@@ -10,7 +10,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { transports: ['websocket', 'polling'], pingTimeout: 25000 });
 const PORT = Number(process.env.PORT || 3000);
-const PIN = process.env.MC_PIN || '482916'; // demo only; change for public hosting
+const PIN = process.env.MC_PIN || '482916'; // demo only; change this in Render env vars
 const players = new Map();
 const lobbyChat = [];
 const chatLastSent = new Map();
@@ -22,7 +22,6 @@ let deadline = null;
 let timer = null;
 let revision = 0;
 
-// Every answer and reference is grounded in the group's 37-page PDF.
 const questions = [
  { place: 'Hà Tiên • Ngày 1', slide: 12, title: 'Cửa ải Chùa Phù Dung', prompt: 'Trong ngày 1, đoàn ghé ngôi chùa nào ở Hà Tiên?', options: ['Chùa Phù Dung', 'Chùa Hộ Quốc', 'Chùa Thiên Mụ', 'Chùa Bái Đính'], correct: 0, fact: 'Slide 12: Ngày 1 tham quan Chùa Phù Dung, Lăng Mạc Cửu và Thạch Động.' },
  { place: 'Grand World • Ngày 1', slide: 13, title: 'Phố không ngủ', prompt: 'Địa điểm nào sau đây thuộc Grand World trong tour?', options: ['Đài phun nước Trevi', 'Nhà Tre', 'Thạch Động', 'Chùa Phù Dung'], correct: 1, fact: 'Slide 13: Grand World gồm Nhà Tre, sông Venice và Urban Park.' },
@@ -35,47 +34,83 @@ const questions = [
 ];
 
 function cleanName(v) { return String(v || '').replace(/[<>\\\r\n]/g, '').trim().slice(0, 24); }
+function cleanGender(v){ return v === 'female' ? 'female' : 'male'; }
 function standings() { return [...players.values()].sort((a,b)=>b.score-a.score || a.joined-b.joined); }
 function ceremonyResult() {
- const ordered=standings();
- const rewardTitles=['ĐẠO TỔ PHÚ QUỐC','CHÂN NHÂN HỘ QUỐC','TIÊN TỬ GRAND WORLD'];
- const trialTitles=['YÊU VƯƠNG DEADLINE','HẦU VƯƠNG LẠC ĐẠO','PHÀM NHÂN LẠC TOUR'];
- const trialTasks=['Tự nguyện đọc một câu hứa chống deadline','Tự nguyện tạo dáng thiền 5 giây','Tự nguyện quảng cáo tour BITI TOURIST trong 10 giây'];
- const best=ordered.slice(0,3).map((p,i)=>({name:p.name,score:p.score,title:rewardTitles[i],rank:i+1}));
- // Bottom rankings are chosen only if there are at least six distinct players.
- const worst=ordered.length>=6 ? ordered.slice(-3).reverse().map((p,i)=>({name:p.name,score:p.score,title:trialTitles[i],task:trialTasks[i],rank:ordered.length-i})) : [];
+ const ordered = standings();
+ const rewardTitles = ['ĐẠO TỔ PHÚ QUỐC','CHÂN NHÂN HỘ QUỐC','TIÊN TỬ GRAND WORLD'];
+ const trialTitles = ['YÊU VƯƠNG DEADLINE','HẦU VƯƠNG LẠC ĐẠO','PHÀM NHÂN LẠC TOUR'];
+ const trialTasks = ['Tự nguyện đọc một câu hứa chống deadline','Tự nguyện tạo dáng thiền 5 giây','Tự nguyện quảng cáo tour BITI TOURIST trong 10 giây'];
+ const best = ordered.slice(0,3).map((p,i)=>({name:p.name,score:p.score,title:rewardTitles[i],rank:i+1}));
+ const worst = ordered.length >= 6 ? ordered.slice(-3).reverse().map((p,i)=>({name:p.name,score:p.score,title:trialTitles[i],task:trialTasks[i],rank:ordered.length-i})) : [];
  return {best,worst,total:ordered.length};
 }
 function lobbyPeople() {
  const online = new Set();
  for (const sock of io.sockets.sockets.values()) if(sock.data.playerId) online.add(sock.data.playerId);
- return [...players.values()].filter(p=>online.has(p.id)).sort((a,b)=>a.joined-b.joined)
-   .map(p=>({name:p.name,seat:parseInt(p.id.replace(/-/g,'').slice(0,8),16)%8}));
+ return [...players.values()]
+   .filter(p=>online.has(p.id))
+   .sort((a,b)=>a.joined-b.joined)
+   .map(p=>({
+     id:p.id,
+     name:p.name,
+     gender:p.gender || 'male',
+     bubble:(p.chatUntil && p.chatUntil > Date.now()) ? p.lastChat : ''
+   }));
 }
-function top() { return [...players.values()].sort((a,b)=>b.score-a.score || a.joined-b.joined).slice(0,10).map(p=>({name:p.name,score:p.score})); }
+function top() {
+ return standings().slice(0,10).map(p=>({name:p.name,score:p.score}));
+}
 function publicState() {
- return { phase, round, totalRounds: questions.length, deadline, now: Date.now(), count: players.size, leaderboard: top(),
-   question: (round>=0 && (phase==='question'||phase==='reveal')) ? {place:questions[round].place, title: questions[round].title, prompt:questions[round].prompt, options:questions[round].options, slide:questions[round].slide, ...(phase==='reveal' ? {correct:questions[round].correct,fact:questions[round].fact} : {}) } : null,
-   ceremony: phase==='ceremony' ? ceremonyResult() : null,
-   lobby: phase==='lobby' ? {people:lobbyPeople(),messages:lobbyChat,chatLocked} : null, revision };
+ return {
+   phase,
+   round,
+   totalRounds: questions.length,
+   deadline,
+   now: Date.now(),
+   count: players.size,
+   leaderboard: top(),
+   question: (round >= 0 && (phase === 'question' || phase === 'reveal')) ? {
+     place: questions[round].place,
+     title: questions[round].title,
+     prompt: questions[round].prompt,
+     options: questions[round].options,
+     slide: questions[round].slide,
+     ...(phase === 'reveal' ? {correct: questions[round].correct, fact: questions[round].fact} : {})
+   } : null,
+   ceremony: phase === 'ceremony' ? ceremonyResult() : null,
+   lobby: phase === 'lobby' ? {people:lobbyPeople(),messages:lobbyChat,chatLocked} : null,
+   revision
+ };
 }
 function personal(p) {
- const ordered=[...players.values()].sort((a,b)=>b.score-a.score||a.joined-b.joined);
- return {name:p.name,score:p.score,rank:ordered.findIndex(x=>x.id===p.id)+1,answered: p.answeredRound===round,selected: p.selected};
+ const ordered = standings();
+ return {name:p.name,gender:p.gender || 'male',score:p.score,rank:ordered.findIndex(x=>x.id===p.id)+1,answered: p.answeredRound===round,selected: p.selected};
 }
-function broadcast() { revision++; io.emit('state',publicState()); for (const s of io.sockets.sockets.values()) if(s.data.playerId && players.has(s.data.playerId)) s.emit('me', personal(players.get(s.data.playerId))); }
-function stopTimer(){ if(timer)clearTimeout(timer);timer=null;deadline=null; }
-function reveal(){ if(phase!=='question')return;stopTimer();phase='reveal';broadcast(); }
+function broadcast() {
+ revision++;
+ io.emit('state', publicState());
+ for (const s of io.sockets.sockets.values()) {
+   if (s.data.playerId && players.has(s.data.playerId)) s.emit('me', personal(players.get(s.data.playerId)));
+ }
+}
+function stopTimer(){ if(timer) clearTimeout(timer); timer = null; deadline = null; }
+function reveal(){ if(phase !== 'question') return; stopTimer(); phase = 'reveal'; broadcast(); }
 function nextQuestion(){
- if(!['lobby','reveal'].includes(phase))return false;
- stopTimer(); if(round+1>=questions.length){phase='finished';broadcast();return true;}
- round++;phase='question';deadline=Date.now()+20000;
- for(const p of players.values()){p.selected=null;p.answeredRound=-1;}
- timer=setTimeout(reveal,20050);broadcast();return true;
+ if(!['lobby','reveal'].includes(phase)) return false;
+ stopTimer();
+ if(round + 1 >= questions.length){ phase = 'finished'; broadcast(); return true; }
+ round++;
+ phase = 'question';
+ deadline = Date.now() + 20000;
+ for(const p of players.values()){ p.selected = null; p.answeredRound = -1; }
+ timer = setTimeout(reveal, 20050);
+ broadcast();
+ return true;
 }
-function finish(){stopTimer();phase='finished';broadcast();}
-function openCeremony(){if(phase!=='finished')return false;phase='ceremony';broadcast();return true;}
-function reset(){stopTimer();players.clear();chatLastSent.clear();lobbyChat.length=0;chatLocked=false;round=-1;phase='lobby';broadcast();}
+function finish(){ stopTimer(); phase = 'finished'; broadcast(); }
+function openCeremony(){ if(phase !== 'finished') return false; phase = 'ceremony'; broadcast(); return true; }
+function reset(){ stopTimer(); players.clear(); chatLastSent.clear(); lobbyChat.length = 0; chatLocked = false; round = -1; phase = 'lobby'; broadcast(); }
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/mc',(req,res)=>res.sendFile(path.join(__dirname,'public','mc.html')));
@@ -83,65 +118,86 @@ app.get('/health',(req,res)=>res.json({ok:true,players:players.size,phase}));
 app.get('/join-qr.svg', async(req,res)=>{
  try {
   const origin = process.env.PUBLIC_URL || `${req.protocol}://${req.get('host')}`;
-  const svg=await QRCode.toString(origin.replace(/\/$/,'')+'/',{type:'svg',margin:2,color:{dark:'#123e61',light:'#ffffff'}});
+  const svg = await QRCode.toString(origin.replace(/\/$/,'')+'/', {type:'svg',margin:2,color:{dark:'#123e61',light:'#ffffff'}});
   res.type('image/svg+xml').send(svg);
- }catch(e){res.status(500).send('QR unavailable');}
+ } catch(e) { res.status(500).send('QR unavailable'); }
 });
 
-io.on('connection',socket=>{
- socket.emit('state',publicState());
+io.on('connection', socket => {
+ socket.emit('state', publicState());
  socket.on('join',(payload,ack)=>{
-  const name=cleanName(payload?.name); const id=String(payload?.id||'').slice(0,100);
-  if(!name || name.length<2)return ack?.({ok:false,error:'Tên cần ít nhất 2 ký tự.'});
-  if(!/^[a-zA-Z0-9-]{15,100}$/.test(id))return ack?.({ok:false,error:'Mã phiên không hợp lệ, hãy tải lại trang.'});
-  if(phase==='finished'||phase==='ceremony')return ack?.({ok:false,error:'Vòng chơi đã kết thúc. Hãy chờ MC mở vòng mới.'});
-  if(!players.has(id) && players.size>=120)return ack?.({ok:false,error:'Phòng đã đủ 120 người.'});
-  let p=players.get(id);
-  if(!p){p={id,name,score:0,joined:Date.now(),answeredRound:-1,selected:null};players.set(id,p);}else p.name=name;
-  socket.data.playerId=id;socket.emit('me',personal(p));ack?.({ok:true});broadcast();
+  const name = cleanName(payload?.name);
+  const gender = cleanGender(payload?.gender);
+  const id = String(payload?.id || '').slice(0,100);
+  if(!name || name.length < 2) return ack?.({ok:false,error:'Tên cần ít nhất 2 ký tự.'});
+  if(!/^[a-zA-Z0-9-]{15,100}$/.test(id)) return ack?.({ok:false,error:'Mã phiên không hợp lệ, hãy tải lại trang.'});
+  if(phase === 'finished' || phase === 'ceremony') return ack?.({ok:false,error:'Vòng chơi đã kết thúc. Hãy chờ MC mở vòng mới.'});
+  if(!players.has(id) && players.size >= 120) return ack?.({ok:false,error:'Phòng đã đủ 120 người.'});
+  let p = players.get(id);
+  if(!p){
+   p = {id,name,gender,score:0,joined:Date.now(),answeredRound:-1,selected:null,lastChat:'',chatUntil:0};
+   players.set(id,p);
+   lobbyChat.push({id,name:'Hệ thống',text:`${name} vừa bước vào thiền đường.`,at:Date.now(),system:true});
+   if(lobbyChat.length > MAX_CHAT_HISTORY) lobbyChat.shift();
+  } else {
+   p.name = name;
+   p.gender = gender;
+  }
+  socket.data.playerId = id;
+  socket.emit('me', personal(p));
+  ack?.({ok:true});
+  broadcast();
  });
  socket.on('lobby:chat',(raw,ack)=>{
-  const id=socket.data.playerId,p=players.get(id);
-  if(phase!=='lobby'||chatLocked||!p)return ack?.({ok:false,error:'Chat hiện không mở.'});
-  const msg=String(raw||'').replace(/[<>\r\n\x00-\x1f]/g,'').trim().slice(0,120);
-  if(!msg)return ack?.({ok:false,error:'Hãy nhập tin nhắn.'});
-  const now=Date.now();
-  if(now-(chatLastSent.get(id)||0)<1800)return ack?.({ok:false,error:'Nhắn chậm lại chút nha!'});
-  chatLastSent.set(id,now);
-  lobbyChat.push({name:p.name,text:msg,at:now});
-  if(lobbyChat.length>MAX_CHAT_HISTORY)lobbyChat.shift();
-  io.emit('lobby:message',lobbyChat[lobbyChat.length-1]);
+  const id = socket.data.playerId, p = players.get(id);
+  if(phase !== 'lobby' || chatLocked || !p) return ack?.({ok:false,error:'Chat hiện không mở.'});
+  const msg = String(raw || '').replace(/[<>\r\n\x00-\x1f]/g,'').trim().slice(0,120);
+  if(!msg) return ack?.({ok:false,error:'Hãy nhập tin nhắn.'});
+  const now = Date.now();
+  if(now - (chatLastSent.get(id)||0) < 1800) return ack?.({ok:false,error:'Nhắn chậm lại chút nha!'});
+  chatLastSent.set(id, now);
+  p.lastChat = msg;
+  p.chatUntil = now + 6000;
+  lobbyChat.push({id,name:p.name,text:msg,at:now,system:false});
+  if(lobbyChat.length > MAX_CHAT_HISTORY) lobbyChat.shift();
+  io.emit('lobby:message', lobbyChat[lobbyChat.length - 1]);
   ack?.({ok:true});
+  broadcast();
  });
- socket.on('disconnect',()=>{if(phase==='lobby')broadcast();});
+ socket.on('disconnect',()=>{ if(phase === 'lobby') broadcast(); });
  socket.on('answer',(choice,ack)=>{
-  const p=players.get(socket.data.playerId); const q=questions[round];
-  if(!p||phase!=='question'||!q||Date.now()>deadline||p.answeredRound===round)return ack?.({ok:false});
-  if(!Number.isInteger(choice)||choice<0||choice>=q.options.length)return ack?.({ok:false});
-  p.answeredRound=round;p.selected=choice;
-  if(choice===q.correct){const remaining=Math.max(0,deadline-Date.now());p.score+=200+Math.floor(remaining/200);}
-  else {p.score=Math.max(0,p.score-100);}
-  ack?.({ok:true});broadcast();
+  const p = players.get(socket.data.playerId); const q = questions[round];
+  if(!p || phase !== 'question' || !q || Date.now() > deadline || p.answeredRound === round) return ack?.({ok:false});
+  if(!Number.isInteger(choice) || choice < 0 || choice >= q.options.length) return ack?.({ok:false});
+  p.answeredRound = round; p.selected = choice;
+  if(choice === q.correct){
+   const remaining = Math.max(0, deadline - Date.now());
+   p.score += 200 + Math.floor(remaining / 200);
+  } else {
+   p.score = Math.max(0, p.score - 100);
+  }
+  ack?.({ok:true});
+  broadcast();
  });
  socket.on('mc:auth',(pin,ack)=>{
-  // Basic PIN auth: suitable for one short classroom session, not a public admin product.
-  const x=Buffer.from(String(pin||'')), y=Buffer.from(PIN);
-  if(x.length!==y.length||!crypto.timingSafeEqual(x,y))return ack?.({ok:false,error:'Sai mã MC.'});
-  socket.data.mc=true;ack?.({ok:true});socket.emit('state',publicState());
+  const x = Buffer.from(String(pin||'')), y = Buffer.from(PIN);
+  if(x.length !== y.length || !crypto.timingSafeEqual(x,y)) return ack?.({ok:false,error:'Sai mã MC.'});
+  socket.data.mc = true; ack?.({ok:true}); socket.emit('state', publicState());
  });
  socket.on('mc:action',(action,ack)=>{
-  if(!socket.data.mc)return ack?.({ok:false,error:'Chưa xác thực MC.'});
-  let success=true;
-  if(action==='start' && phase==='lobby')success=nextQuestion();
-  else if(action==='next')success=nextQuestion();
-  else if(action==='reveal' && phase==='question')reveal();
-  else if(action==='finish')finish();
-  else if(action==='ceremony')success=openCeremony();
-  else if(action==='chat:lock' && phase==='lobby'){chatLocked=!chatLocked;broadcast();}
-  else if(action==='chat:clear' && phase==='lobby'){lobbyChat.length=0;broadcast();}
-  else if(action==='reset')reset();
-  else success=false;
+  if(!socket.data.mc) return ack?.({ok:false,error:'Chưa xác thực MC.'});
+  let success = true;
+  if(action === 'start' && phase === 'lobby') success = nextQuestion();
+  else if(action === 'next' && phase === 'reveal') success = nextQuestion();
+  else if(action === 'reveal' && phase === 'question') reveal();
+  else if(action === 'finish') finish();
+  else if(action === 'ceremony') success = openCeremony();
+  else if(action === 'chat:lock' && phase === 'lobby'){ chatLocked = !chatLocked; broadcast(); }
+  else if(action === 'chat:clear' && phase === 'lobby'){ lobbyChat.length = 0; broadcast(); }
+  else if(action === 'reset') reset();
+  else success = false;
   ack?.({ok:success});
  });
 });
+
 server.listen(PORT,()=>console.log(`Chùa Công Đức running on http://localhost:${PORT}`));

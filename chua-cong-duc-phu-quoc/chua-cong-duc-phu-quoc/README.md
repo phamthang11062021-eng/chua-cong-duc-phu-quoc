@@ -95,3 +95,10 @@ Tài liệu nguồn do người dùng cung cấp: `N10-PPT (2)(1).pdf`. Các đi
 - Phòng chờ ngồi thiền và chat vẫn hoạt động. MC bấm **BẮT ĐẦU THỬ THÁCH** để vào câu hỏi 1.
 - Điểm chỉ đến từ câu hỏi: đúng +200 đến +300 tùy tốc độ, sai trừ 100 (tối thiểu 0).
 - Top 3 phong thần và 3 bạn cuối bảng vẫn có danh hiệu; không còn thao tác gõ mõ.
+
+
+## Bản cập nhật chibi 2D
+- Thêm bước chọn giới tính: sư chú / ni cô.
+- Sảnh chờ là thiền đường chibi 2D.
+- Người chơi thấy nhau ngồi chung, tên hiện trên đầu.
+- Tin nhắn chat nổi bong bóng trên đầu nhân vật trong vài giây.
