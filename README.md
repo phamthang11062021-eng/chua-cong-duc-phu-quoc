@@ -36,3 +36,12 @@ Giữ nguyên Render Root Directory đang hoạt động, ví dụ `chua-cong-du
 - Giới hạn 80 phiên trong code không chứng minh Render Free chạy mượt 80 điện thoại thật. Cần thử trước trong điều kiện Wi-Fi lớp.
 - Trang `/screen` là trang trình chiếu công khai, không chứa điều khiển quản trị.
 - File `.env.example` chỉ là mẫu; dùng Environment Variables trên Render, không upload file `.env` chứa PIN thật.
+
+
+## V7 - màn chiếu đủ 80 thí chủ
+- Trang `/screen` hiển thị 80 chỗ trong **1 màn hình máy chiếu** (10 cột × 8 hàng), không chuyển dãy; avatar, tên, bong bóng chat mới nhất nằm trên đúng nhân vật.
+- Chat chung chiếm cột bên trái và cập nhật thời gian thực; chỉ tối đa 3 bong bóng chat mới nhất hiển thị cùng lúc để hạn chế che nhau.
+- Bộ đếm ở góc trên dùng số **người đang kết nối (onlineCount)**; số đã ghi danh được hiển thị riêng, vì người rớt mạng có thể vẫn có điểm và tên trong game.
+- `/screen` được thiết kế cho máy chiếu/laptop 16:9; màn điện thoại sinh viên vẫn giữ 6 người/dãy để đọc được tên.
+- Các dòng tin nhắn vẫn có thể bị rút gọn trên máy chiếu nếu gửi nhiều hoặc quá dài, nhưng dữ liệu trò chuyện lưu ở server có giới hạn 50 tin nhắn.
+- `MC_PIN` tiếp tục thiết lập qua Render Environment Variables.

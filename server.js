@@ -61,6 +61,13 @@ function lobbyPeople() {
 function top() {
  return standings().slice(0,10).map(p=>({name:p.name,score:p.score}));
 }
+function onlineCount() {
+ const ids = new Set();
+ for (const sock of io.sockets.sockets.values()) {
+   if (sock.data.playerId && players.has(sock.data.playerId)) ids.add(sock.data.playerId);
+ }
+ return ids.size;
+}
 function publicState() {
  return {
    phase,
@@ -69,6 +76,7 @@ function publicState() {
    deadline,
    now: Date.now(),
    count: players.size,
+   onlineCount: onlineCount(),
    leaderboard: top(),
    question: (round >= 0 && (phase === 'question' || phase === 'reveal')) ? {
      place: questions[round].place,
