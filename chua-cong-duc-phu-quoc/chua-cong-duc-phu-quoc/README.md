@@ -102,3 +102,25 @@ Tài liệu nguồn do người dùng cung cấp: `N10-PPT (2)(1).pdf`. Các đi
 - Sảnh chờ là thiền đường chibi 2D.
 - Người chơi thấy nhau ngồi chung, tên hiện trên đầu.
 - Tin nhắn chat nổi bong bóng trên đầu nhân vật trong vài giây.
+
+
+## Cập nhật tượng Phật 2D (sửa lỗi 3 khối trắng)
+Hình bàn thờ là `public/altar-2d.webp`. Cập nhật `public/index.html`, `public/style.css`, `public/app.js` và thêm ảnh này lên GitHub (cùng thư mục `public`). Không cần thay `server.js`.
+
+
+## Sảnh chờ theo ảnh tham chiếu (bản chat + số người)
+- Thanh tên game xuất hiện góc trên bên trái của chánh điện.
+- Bộ đếm số người **đang online** hiển thị ở góc trên phải, theo dạng `Đang có: N/80`. Số 80 là mục tiêu lớp học, không phải giới hạn người chơi cứng (hệ thống vẫn cho tối đa 120 phiên).
+- Chat tối màu đặt ngay góc dưới trái sảnh như ảnh mẫu, vẫn dùng Socket.IO gửi và nhận thật.
+- Bong bóng chat trên đầu avatar chibi xuất hiện 6 giây rồi tự tắt.
+- Có thể thử trên Render sau khi cập nhật. Chưa xác minh tải 80 kết nối thật.
+
+
+## Bản V3 — sảnh chờ minh họa 2D
+- Nền chánh điện minh họa riêng tại `public/assets/thien-duong.webp`, không còn tượng dựng bằng CSS.
+- Sư chú, ni cô có nhân vật SVG 2D riêng, phía trước và từ phía sau; tên và bong bóng chat gắn với vị trí nhân vật.
+- Số lượng người thực tế cập nhật từ Socket.IO trong ô `Sảnh chờ` góc phải.
+- Chat chung đặt góc trái dưới trên desktop; di chuyển ngay dưới sảnh trên màn hình điện thoại để không che nhân vật.
+- MC vẫn dùng `/mc`, câu hỏi và phong thần không đổi.
+- Điểm/chat được lưu trong RAM. Không deploy giữa phiên chơi vì sẽ reset dữ liệu.
+- Chưa kiểm thử hiệu năng với 80 kết nối thật.

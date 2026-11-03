@@ -132,7 +132,7 @@ io.on('connection', socket => {
   if(!name || name.length < 2) return ack?.({ok:false,error:'Tên cần ít nhất 2 ký tự.'});
   if(!/^[a-zA-Z0-9-]{15,100}$/.test(id)) return ack?.({ok:false,error:'Mã phiên không hợp lệ, hãy tải lại trang.'});
   if(phase === 'finished' || phase === 'ceremony') return ack?.({ok:false,error:'Vòng chơi đã kết thúc. Hãy chờ MC mở vòng mới.'});
-  if(!players.has(id) && players.size >= 120) return ack?.({ok:false,error:'Phòng đã đủ 120 người.'});
+  if(!players.has(id) && players.size >= 80) return ack?.({ok:false,error:'Thiền đường đã đủ 80 người.'});
   let p = players.get(id);
   if(!p){
    p = {id,name,gender,score:0,joined:Date.now(),answeredRound:-1,selected:null,lastChat:'',chatUntil:0};
@@ -163,6 +163,14 @@ io.on('connection', socket => {
   io.emit('lobby:message', lobbyChat[lobbyChat.length - 1]);
   ack?.({ok:true});
   broadcast();
+  // Remove the speech bubble after 6 seconds for everyone, including idle clients.
+  setTimeout(() => {
+    if (phase === 'lobby' && p.chatUntil <= Date.now() && p.lastChat === msg) {
+      p.lastChat = '';
+      p.chatUntil = 0;
+      broadcast();
+    }
+  }, 6100);
  });
  socket.on('disconnect',()=>{ if(phase === 'lobby') broadcast(); });
  socket.on('answer',(choice,ack)=>{
