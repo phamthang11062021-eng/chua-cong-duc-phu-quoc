@@ -98,3 +98,100 @@
 .chat-line.system{color:#8b6630;font-weight:800;background:#fff8e5;padding:8px 9px;border-radius:10px;border-bottom:0;margin:4px 0}
 @media(max-width:760px){.hall-scene{height:460px}.hall-wall-art{width:74px;height:44px;top:150px}.altar-wrap{top:94px;height:178px}.statue-main{width:94px;height:144px}.statue-main::before{left:34px}.statue-left,.statue-right{width:70px;height:108px}.statue-left{left:24px}.statue-right{right:24px}.avatar-name{max-width:84px;font-size:10px;padding:3px 6px}.chat-bubble{max-width:86px;font-size:9px}.chibi{width:62px;height:74px}.chibi .avatar-head{width:32px;height:32px;left:15px;top:8px}.chibi .avatar-body{width:42px;height:30px;left:10px;top:29px}.chibi .avatar-arms{width:36px;left:13px;top:36px}.chibi .avatar-seat{width:50px;height:14px;left:6px;bottom:8px}}
 @media(max-width:520px){.gender-picker{grid-template-columns:1fr}.hall-scene{height:410px}.hall-wall-art{display:none}.hall-lantern{top:80px}.altar-wrap{width:94%;top:100px}.chat-form{flex-direction:column}.chat-form button{width:100%}.me-bar{grid-template-columns:1.3fr 1fr 1fr}}
+
+
+/* Altar artwork (replaces malformed CSS statue silhouettes) */
+.altar-wrap{top:64px;width:min(98%,900px);height:230px;z-index:2;pointer-events:none}
+.altar-illustration{width:100%;height:100%;background-image:url('/altar-2d.webp');background-size:100% 100%;background-position:center;background-repeat:no-repeat;filter:drop-shadow(0 5px 8px #3b100b77);border-radius:7px;mask-image:linear-gradient(to right,transparent,#000 3%,#000 97%,transparent)}
+.altar-backdrop,.altar-incense,.altar-statue{display:none!important}
+.hall-floor{height:46%;z-index:1}
+.avatar-stage{z-index:3}
+@media(max-width:760px){.altar-wrap{top:83px;height:185px;width:99%}}
+@media(max-width:520px){.altar-wrap{top:95px;height:140px;width:99%}}
+
+
+/* MATCH REFERENCE: top-right live occupancy, bottom-left embedded chat */
+.hall-scene{height:560px;isolation:isolate;margin-bottom:8px}
+.scene-title,.scene-occupancy{position:absolute;z-index:120;display:flex;gap:10px;align-items:center;border:1px solid #dca452;background:linear-gradient(125deg,#271111dd,#472012e8);box-shadow:0 6px 17px #1706027d;color:#fff6e4;border-radius:999px;padding:9px 14px;text-align:left;line-height:1.15}
+.scene-title{top:12px;left:13px;font-size:17px;font-weight:900}
+.scene-title-icon{font-size:24px}
+.scene-title small,.scene-occupancy small{display:block;margin-top:4px;color:#ffcf72;font-size:11px;font-weight:800}
+.scene-occupancy{top:12px;right:13px;font-size:17px;font-weight:900}
+.scene-occupancy small{color:#fff9e8;font-weight:500}
+.occupancy-icon{font-size:23px}
+.hall-scene>.lobby-chat{position:absolute;z-index:130;bottom:12px;left:12px;width:min(350px,47%);height:218px;display:flex;flex-direction:column;gap:0;min-width:0;border:1px solid #cc9146;border-radius:18px;padding:0 11px 10px;background:#281410ef;box-shadow:0 7px 22px #0d0303a1;text-align:left;backdrop-filter:blur(8px)}
+.hall-scene .chat-header{margin:0 -11px;padding:10px 12px;border-bottom:1px solid #a77d4d;color:#fff8eb;align-items:center;flex:0 0 auto}
+.hall-scene .chat-header strong{font-size:13px}
+.hall-scene .chat-header span{color:#efcfa9;font-size:9px}
+.hall-scene .chat-messages{height:auto;min-height:0;flex:1;overflow-y:auto;border:0;background:transparent;margin:6px 0 6px;padding:1px 4px}
+.hall-scene .chat-line{color:#fff2e2;border-bottom:1px solid #ffffff16;padding:4px 0;font-size:11px}
+.hall-scene .chat-line strong{color:#ffca72}
+.hall-scene .chat-line.system{background:#fff0cd1b;color:#f6d3a2;font-size:10px;padding:5px 7px}
+.hall-scene .chat-empty{color:#e0b98d;padding:18px 4px}
+.hall-scene .chat-form{gap:7px;display:flex;flex-direction:row;flex:0 0 auto}
+.hall-scene .chat-form input{font-size:12px;background:#fff;border:0;padding:9px!important;min-width:0}
+.hall-scene .chat-form button{min-height:35px;padding:8px 12px;font-size:11px;box-shadow:none;width:auto;flex:0 0 auto}
+.hall-scene .chat-notice{display:none}
+.hall-scene .avatar-stage{z-index:5}
+.hall-scene .avatar-wrap{z-index:var(--rank,5)}
+.avatar-wrap{isolation:isolate}
+.avatar-name{order:-1}
+.chat-bubble{position:relative;order:-2;max-height:72px;overflow-wrap:anywhere}
+@media(max-width:650px){
+  .hall-scene{height:500px}
+  .scene-title{left:7px;top:8px;padding:7px 9px;font-size:11px;gap:5px}
+  .scene-title-icon{font-size:16px}
+  .scene-title small,.scene-occupancy small{font-size:9px}
+  .scene-occupancy{right:7px;top:8px;padding:7px 9px;font-size:11px;gap:5px}
+  .occupancy-icon{font-size:16px}
+  .hall-scene>.lobby-chat{bottom:6px;left:6px;width:min(260px,68%);height:170px;padding:0 7px 7px;border-radius:13px}
+  .hall-scene .chat-header{padding:6px 8px;margin:0 -7px}
+  .hall-scene .chat-header span{display:none}
+  .hall-scene .chat-messages{margin:4px 0;font-size:10px}
+  .hall-scene .chat-line{font-size:10px}
+  .hall-scene .chat-form{flex-direction:row}
+  .hall-scene .chat-form input{padding:7px!important;font-size:10px}
+  .hall-scene .chat-form button{font-size:10px;padding:6px;min-height:30px}
+}
+
+
+/* ===== Chánh điện illustration + live chibi sprites (V3) ===== */
+.lobby-panel{padding:12px;background:linear-gradient(145deg,#fff5dc,#fffefd);border-color:#d9ab63}
+.lobby-panel>h2,.lobby-panel>p,.lobby-panel>.badge{padding-left:14px;padding-right:14px}
+.hall-scene{height:auto;aspect-ratio:16/9;min-height:460px;background:#4f1e12;position:relative;isolation:isolate;border-radius:18px;overflow:hidden;border:3px solid #cf9c4b;box-shadow:0 10px 30px #2b0d0944}
+.temple-backdrop{position:absolute;inset:0;background:url('/assets/thien-duong.webp') center center / cover no-repeat;z-index:0}
+.hall-scene .avatar-stage{position:absolute;inset:0;z-index:5;pointer-events:none}
+.hall-scene .avatar-wrap{position:absolute;z-index:var(--rank,5);left:var(--x);top:var(--y);width:126px;display:flex;flex-direction:column;align-items:center;transform:translate(-50%,-80%) scale(var(--scale));transform-origin:50% 75%;pointer-events:none;filter:drop-shadow(0 5px 4px #1c07054a)}
+.chibi-sprite{width:126px;height:142px;object-fit:contain;display:block;animation:meditate-bob 3.2s ease-in-out infinite}
+.avatar-name{order:-1;display:block;max-width:140px;padding:5px 10px;background:#2a110def;border:1px solid #ab7442;color:#fff8e8;border-radius:999px;font-size:12px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-shadow:0 2px 8px #0006;margin:0 0 3px}
+.avatar-wrap.me .avatar-name{border-color:#f8d87c;background:#164b56;color:#fff9cc}
+.chat-bubble{order:-2;position:relative;display:none;opacity:1;transform:none;max-width:184px;width:max-content;min-width:36px;max-height:94px;background:#fffefa;border:2px solid #f8d99c;color:#4b2b1c;border-radius:15px;padding:7px 10px;margin-bottom:8px;font-size:11px;line-height:1.4;font-weight:800;white-space:normal;overflow-wrap:anywhere;text-align:center;box-shadow:0 3px 9px #1607014b}
+.chat-bubble.show{display:block;opacity:1;transform:none}
+.chat-bubble:after{content:'';position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#fffefa}
+.scene-title,.scene-occupancy{background:#2b120fe8;border:2px solid #d59a43;border-radius:999px;box-shadow:0 3px 14px #180502a1;z-index:500}
+.scene-title{font-size:16px}.scene-title small{color:#f9c66e;font-size:12px}
+.scene-occupancy{font-size:15px}.scene-occupancy small{color:#fff4db;font-size:12px}
+.hall-scene>.lobby-chat{z-index:600;width:min(355px,33%);height:220px;border:2px solid #d49c47;border-radius:20px;background:#26100ef2;backdrop-filter:blur(5px);box-shadow:0 5px 18px #15030080}
+.hall-scene .chat-header strong{font-size:15px;color:#fff2d8}.hall-scene .chat-messages{scrollbar-color:#9d693e transparent}
+.hall-scene .chat-line{font-size:12px}.hall-scene .chat-form input{background:#fffdfa!important}
+@media(max-width:840px){
+  .hall-scene{min-height:420px;aspect-ratio:4/3}
+  .temple-backdrop{background-size:cover}
+  .hall-scene>.lobby-chat{width:40%;height:192px}
+  .hall-scene .avatar-wrap{width:110px}
+  .chibi-sprite{width:110px;height:122px}
+  .scene-title{font-size:12px}.scene-occupancy{font-size:12px}
+}
+@media(max-width:560px){
+  .hall-scene{height:390px;min-height:390px;aspect-ratio:auto;overflow:visible;background:#37170c;border-radius:14px 14px 0 0;border-bottom:0}
+  .temple-backdrop{background-size:auto 100%;background-position:50% 50%;border-radius:11px 11px 0 0}
+  .hall-scene .avatar-wrap{width:106px}
+  .chibi-sprite{width:106px;height:118px}
+  .avatar-name{font-size:11px;padding:4px 8px;max-width:126px}
+  .chat-bubble{max-width:150px;font-size:10px}
+  .scene-title,.scene-occupancy{top:7px;font-size:10px;padding:6px 8px}
+  .scene-title small,.scene-occupancy small{font-size:9px}
+  .hall-scene>.lobby-chat{top:100%;bottom:auto;left:-3px;width:calc(100% + 6px);height:190px;background:#281411f9;border-radius:0 0 15px 15px;border-top:0;z-index:600}
+  .lobby-meta{margin-top:205px;padding:6px;flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){.chibi-sprite{animation:none}}

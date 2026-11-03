@@ -62,50 +62,36 @@ function renderQuestion(s){
     : 'MC sẽ dẫn sang thử thách kế tiếp.';
 }
 function getSeatLayout(total){
+  // Seat rows progress from altar (small, far) to camera (big, close).
+  // For 80 players: 6+8+10+12+14+16+14 = 80 (bounded rows, all visible).
   const capacities = [6,8,10,12,14,16,18];
-  const positions = [];
-  let left = total;
-  let row = 0;
-  while(left > 0 && row < capacities.length){
-    const count = Math.min(left, capacities[row]);
-    positions.push(count);
-    left -= count;
-    row++;
-  }
-  while(left > 0){
-    positions.push(Math.min(left, 18));
-    left -= 18;
-  }
-  const result = [];
-  const rows = positions.length;
-  positions.forEach((count, rowIndex)=>{
-    const progress = rowIndex / Math.max(1, rows - 1 || 1);
-    const y = 24 + progress * 54;
-    const scale = 0.56 + progress * 0.58;
+  const counts=[];let remaining=total;
+  for(const capacity of capacities){if(!remaining)break;counts.push(Math.min(remaining,capacity));remaining-=capacity;}
+  while(remaining>0){counts.push(Math.min(remaining,18));remaining-=18;}
+  const seats=[];
+  const dense=total>35;
+  counts.forEach((count,r)=>{
+    const p=counts.length===1?.5:r/Math.max(1,counts.length-1);
+    const y = counts.length===1?75:(53+36*p);
+    const scale=(total<=10 ? .69+.38*p : total<=30 ? .53+.35*p : .34+.23*p);
+    const margin=total<=10?13:total<=30?8:3;
     for(let i=0;i<count;i++){
-      const x = 8 + ((i+0.5)/count) * 84;
-      const jitter = ((i%2)?1:-1) * (rowIndex%2?0.8:0.2);
-      result.push({x: Math.max(6, Math.min(94, x + jitter)), y, scale});
+      const x = margin + ((i+.5)/count)*(100-margin*2);
+      seats.push({x,y,scale,back:r<Math.max(1,counts.length-3)});
     }
   });
-  return result;
+  return seats;
 }
-function createAvatar(person, pos, idx){
-  const wrap = document.createElement('div');
-  wrap.className = 'avatar-wrap' + (person.id === id ? ' me' : '');
-  wrap.style.setProperty('--x', pos.x + '%');
-  wrap.style.setProperty('--y', pos.y + '%');
-  wrap.style.setProperty('--scale', pos.scale);
-  wrap.style.zIndex = String(Math.round(pos.y * 10));
-  wrap.innerHTML = `
-    <div class="avatar-name">${escapeHtml(person.name)}</div>
-    <div class="chat-bubble${person.bubble ? ' show' : ''}">${escapeHtml(person.bubble || '')}</div>
-    <div class="chibi ${person.gender === 'female' ? 'nun' : 'monk'}">
-      <div class="avatar-head"></div>
-      <div class="avatar-body"></div>
-      <div class="avatar-arms"></div>
-      <div class="avatar-seat"></div>
-    </div>`;
+function createAvatar(person,pos){
+  const wrap=document.createElement('div');
+  wrap.className='avatar-wrap'+(person.id===id?' me':'');
+  wrap.style.setProperty('--x',pos.x+'%');
+  wrap.style.setProperty('--y',pos.y+'%');
+  wrap.style.setProperty('--scale',pos.scale);
+  wrap.style.setProperty('--rank',String(Math.round(pos.y*10)));
+  const src='/assets/'+(person.gender==='female'?'ni-co':'su-chu')+(pos.back?'-quay-lung':'')+'.svg';
+  // Names are escaped, and image source is derived only from a hardcoded enum.
+  wrap.innerHTML=`<div class="chat-bubble${person.bubble?' show':''}">${escapeHtml(person.bubble||'')}</div><div class="avatar-name">${escapeHtml(person.name)}</div><img class="chibi-sprite" src="${src}" alt="" draggable="false">`;
   return wrap;
 }
 function addChatMessage(m){
@@ -127,8 +113,9 @@ function renderLobby(lobby){
   const stage = $('avatar-stage');
   stage.innerHTML = '';
   const layout = getSeatLayout(lobby.people.length);
-  lobby.people.forEach((p,i)=> stage.append(createAvatar(p, layout[i] || {x:50,y:60,scale:1}, i)));
+  lobby.people.forEach((p,i)=> stage.append(createAvatar(p, layout[i] || {x:50,y:60,scale:1,back:false})));
   $('lobby-count').textContent = lobby.people.length + ' thí chủ đang ngồi thiền';
+  $('scene-online').textContent = lobby.people.length + '/80';
 
   const messages = $('chat-messages');
   if(lobby.messages.length !== lobbyMessageCount){
@@ -205,12 +192,8 @@ socket.on('state', s => {
   }
 });
 socket.on('me', applyMe);
-socket.on('lobby:message', m => {
-  if(current?.phase !== 'lobby') return;
-  const messages = $('chat-messages');
-  if(messages.querySelector('.chat-empty')) messages.innerHTML = '';
-  addChatMessage(m); lobbyMessageCount += 1; messages.scrollTop = messages.scrollHeight;
-});
+// Chat history and bubbles are rendered from authoritative state updates.
+// Avoid also appending lobby:message, which previously duplicated chat messages.
 socket.on('connect', () => {
   $('online').textContent = 'Đã kết nối';
   if(profile.name){

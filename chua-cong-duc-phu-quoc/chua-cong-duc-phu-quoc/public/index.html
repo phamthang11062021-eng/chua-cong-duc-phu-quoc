@@ -55,33 +55,21 @@
         <p>Ai vào trước sẽ ngồi thiền trước. Tên nằm trên đầu nhân vật, chat sẽ nổi bong bóng ngay phía trên.</p>
 
         <div class="hall-scene" aria-label="Thiền đường chờ khai hội">
-          <div class="hall-ceiling"></div>
-          <div class="hall-lantern lantern-left"></div>
-          <div class="hall-lantern lantern-right"></div>
-          <div class="hall-wall-art art-left"></div>
-          <div class="hall-wall-art art-right"></div>
-          <div class="altar-wrap" aria-hidden="true">
-            <div class="altar-backdrop"></div>
-            <div class="altar-statue statue-left"></div>
-            <div class="altar-statue statue-main"></div>
-            <div class="altar-statue statue-right"></div>
-            <div class="altar-incense"></div>
-          </div>
-          <div class="hall-floor"></div>
+          <div class="temple-backdrop" aria-hidden="true"></div>
           <div id="avatar-stage" class="avatar-stage"></div>
-        </div>
-
-        <div class="lobby-meta"><span id="lobby-count">0 thí chủ đang thiền</span><span class="lobby-pulse">● ĐANG CHỜ MC KHAI HỘI</span></div>
-
-        <div class="lobby-chat">
-          <div class="chat-header"><strong>💬 Tán gẫu thiền đường</strong><span>Nói vui, lịch sự nha!</span></div>
+          <div class="scene-title"><span class="scene-title-icon">🪷</span><span>Chùa Công Đức<small>Phú Quốc Edition</small></span></div>
+          <div class="scene-occupancy" aria-live="polite"><span class="occupancy-icon">👥</span><span>Sảnh chờ <small>Đang có: <strong id="scene-online">0/80</strong></small></span></div>
+          <div class="lobby-chat">
+          <div class="chat-header"><strong>👥 Chat chung</strong><span>Nói vui, lịch sự nha!</span></div>
           <div class="chat-messages" id="chat-messages" role="log" aria-live="polite"><div class="chat-empty">Chưa ai lên tiếng. Chào cả lớp đi nè 👋</div></div>
           <form id="chat-form" class="chat-form">
             <input id="chat-input" type="text" maxlength="120" autocomplete="off" placeholder="Gửi lời nhắn cho cả thiền đường..." aria-label="Tin nhắn trò chuyện" required>
             <button type="submit" class="primary" id="chat-send">GỬI ➤</button>
           </form>
-          <p class="chat-notice">Tin nhắn sẽ hiện trong khung chat và nổi lên trên đầu nhân vật vài giây.</p>
+          <p class="chat-notice">Chat công khai trong lớp • MC có thể khóa chat</p>
+          </div>
         </div>
+        <div class="lobby-meta"><span id="lobby-count">0 thí chủ đang thiền</span><span class="lobby-pulse">● ĐANG CHỜ MC KHAI HỘI</span></div>
       </section>
 
       <div class="panel" id="quiz-panel" hidden>
