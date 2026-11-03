@@ -45,3 +45,13 @@ Giữ nguyên Render Root Directory đang hoạt động, ví dụ `chua-cong-du
 - `/screen` được thiết kế cho máy chiếu/laptop 16:9; màn điện thoại sinh viên vẫn giữ 6 người/dãy để đọc được tên.
 - Các dòng tin nhắn vẫn có thể bị rút gọn trên máy chiếu nếu gửi nhiều hoặc quá dài, nhưng dữ liệu trò chuyện lưu ở server có giới hạn 50 tin nhắn.
 - `MC_PIN` tiếp tục thiết lập qua Render Environment Variables.
+
+
+## V8 - Podium tu tiên, nhạc thiền gốc và tiêu đề desktop
+- `/screen`: Top 3 theo bục 2–1–3; Top 1 giữa, lớn nhất, Top 2 và Top 3 bằng kích thước; hào quang CSS chuyển động liên tục.
+- Trang người chơi: cũng hiện bục 2–1–3 trên điện thoại.
+- Sửa tiêu đề `/screen` bị ký tự vuông/cắt dòng trên máy tính.
+- Nút **Bật nhạc thiền** trên `/`, `/mc`, `/screen`; âm thanh gốc được tổng hợp bằng WebAudio từ các âm ngân, chuông và sáo tổng hợp. Không lấy bài nhạc từ video của người dùng. Nhạc tiếp tục xuyên suốt từng trang sau khi bật; khi điều hướng sang trang khác, phải bật lại do giới hạn autoplay của trình duyệt.
+- Để tránh hai nguồn âm thanh phát đè nhau, chỉ bật nhạc trên máy/cửa sổ muốn nghe (thường là máy chiếu của MC).
+- Khi deploy, giữ `MC_PIN` trong Render Environment. Điểm vẫn lưu RAM và có thể mất khi Render khởi động lại.
+- Test thử trên điện thoại + `/screen` trước khi dùng cho lớp đông.
