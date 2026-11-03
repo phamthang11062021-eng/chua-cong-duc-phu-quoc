@@ -124,3 +124,22 @@ Hình bàn thờ là `public/altar-2d.webp`. Cập nhật `public/index.html`, `
 - MC vẫn dùng `/mc`, câu hỏi và phong thần không đổi.
 - Điểm/chat được lưu trong RAM. Không deploy giữa phiên chơi vì sẽ reset dữ liệu.
 - Chưa kiểm thử hiệu năng với 80 kết nối thật.
+
+
+## TRANG CHIẾU MỚI CHO MC
+- `/mc`: đăng nhập MC, điều khiển, xem trước câu hỏi và kết quả phong thần.
+- `/screen`: màn hình trình chiếu công khai, không có nút điều khiển hay mã PIN. Cập nhật real-time theo Socket.IO.
+- Đầu giờ mở `/mc` trên laptop, mở `/screen` ở cửa sổ riêng và đưa cửa sổ đó lên máy chiếu (F11 để toàn màn hình).
+- Khi MC bấm **Bắt đầu thử thách**, màn chiếu hiển thị câu hỏi và bốn lựa chọn. Sau 20 giây hoặc MC bấm **Hiện đáp án**, màn chiếu tô xanh đáp án đúng và hiện giải thích theo slide.
+- MC bấm **Kết thúc**, sau đó **Đại Hội Phong Thần**, màn hình chiếu hiển thị Top 3 và Bottom 3 với hình minh họa/emoji và các danh hiệu.
+- Dữ liệu câu hỏi, đáp án và điểm dùng từ server hiện có. Không cần thêm cơ sở dữ liệu.
+- Tránh chiếu trang `/mc` lúc nhập PIN; `/screen` được thiết kế để chiếu công khai.
+
+
+## Bản V5 — sảnh không chồng lấn và phong thần có tranh
+- Sảnh chờ hiển thị 12 nhân vật mỗi dãy (desktop 6 × 2, mobile 4 × 3). 80 người chia thành 7 dãy, xem bằng nút Dãy trước / Dãy sau. Chỉ nhân vật trong dãy đang xem hiện tên/bong bóng chat; xem đủ 80 tên trong mục danh sách.
+- Khung chat đặt bên ngoài khu vực nhân vật, không che avatar.
+- Top 3 và Bottom 3 có 6 tranh nhân vật vector tùy chỉnh; cả điện thoại và /screen đều dùng tranh này.
+- /mc và /screen được giữ nguyên. Không cần đặt thêm biến môi trường. Không tải file .env lên GitHub.
+- Giới hạn: chưa kiểm chứng 80 điện thoại thật trên Render Free; dữ liệu điểm vẫn lưu RAM.
+- Nếu dùng trình chiếu khi lớp đông, giữ hai tab /mc và /screen riêng, không chiếu mã PIN.

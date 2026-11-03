@@ -114,6 +114,7 @@ function reset(){ stopTimer(); players.clear(); chatLastSent.clear(); lobbyChat.
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/mc',(req,res)=>res.sendFile(path.join(__dirname,'public','mc.html')));
+app.get('/screen',(req,res)=>res.sendFile(path.join(__dirname,'public','screen.html')));
 app.get('/health',(req,res)=>res.json({ok:true,players:players.size,phase}));
 app.get('/join-qr.svg', async(req,res)=>{
  try {
