@@ -95,3 +95,13 @@
 /* Audio toggle on all devices */
 .meditation-audio-toggle{position:fixed;z-index:99999;right:12px;bottom:14px;display:flex;align-items:center;gap:7px;border-radius:40px;border:1px solid #e3b86d;background:#241822ee;color:#ffe0a1;font:800 12px 'Be Vietnam Pro',system-ui,sans-serif;padding:10px 14px;box-shadow:0 8px 24px #0005;cursor:pointer}
 .meditation-audio-toggle:focus-visible{outline:3px solid #ffca70;outline-offset:2px}
+
+/* V9 desktop header and sound controls: avoid cut text & unsupported emoji. */
+@media(min-width:951px){
+ .screen-top{min-height:102px;padding:14px clamp(18px,2.4vw,44px);display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:24px}
+ .screen-brand{font-size:clamp(24px,2.15vw,37px);min-width:0;line-height:1.23;white-space:normal;word-break:normal;overflow:visible}
+ .screen-meta{justify-content:flex-end;white-space:nowrap}
+ .projector-lobby{height:calc(100vh - 163px);min-height:480px}
+}
+.meditation-audio-toggle{font-size:14px!important;background:#321b24!important;border:2px solid #f2c574!important;color:#ffe9af!important;padding:13px 18px!important;box-shadow:0 0 0 3px #241019,0 9px 24px #0008!important}
+.projector-aside-heading{font-family:'Be Vietnam Pro',Arial,sans-serif;letter-spacing:.035em}
